@@ -1,0 +1,12 @@
+*.csv
+*.txt
+*.xml
+*.ann
+*.xmi
+*.png
+*.iml
+*.DS_Store
+
+
+
+
