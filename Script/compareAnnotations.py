@@ -52,8 +52,12 @@ class Evaluation(object):
 
         self.shared_ann_files = None
 
+        self.wrong_categories = dict()
+
         # self.data_dir = os.path.join(self.parentDir, "data")
         self.distros_dict = []
+        self.removed_punc_counter = dict()
+        self.removed_punc = dict()
 
     def headers_dic(self, header):
         with open(header, "r") as h:
@@ -97,6 +101,7 @@ class Evaluation(object):
         os.makedirs(IAA_CSV_dir, exist_ok=True)
 
     def annators_name(self):
+
         list_annotators = []
         for sub_dir in os.listdir(annotators_dir):
             if not sub_dir.startswith('.'):
@@ -104,7 +109,20 @@ class Evaluation(object):
 
         self.list_annotators = list_annotators
 
-    def span_fixer(self, text, start_span, end_span, label):
+
+    def update_punc(self, punc, annotator, who):
+        if who is "annotators" and punc not in self.removed_punc:
+            if annotator not in self.removed_punc.keys():
+                self.removed_punc[annotator] = [punc]
+            else:
+                temp = self.removed_punc.get(annotator)
+                if punc not in temp:
+                    temp.append(punc)
+                    self.removed_punc.update({annotator: temp})
+
+
+    def span_fixer(self, text, start_span, end_span, label, who, annotator):
+        original_text = text
         if not (label.startswith("NIHSS") or label.startswith("mRankin") or label.startswith("ASPECTS")):
             punctuation = string.punctuation.replace(".", "")
 
@@ -113,6 +131,8 @@ class Evaluation(object):
             after_rstrip = len(text)
             end_span -= before_rstrip - after_rstrip
             while text[len(text) - 1] in punctuation:
+                self.update_punc(text[len(text) - 1], annotator, who)
+
                 text = text[:-1]
                 removed_space = len(text) - len(text.rstrip())
                 text = text.rstrip()
@@ -122,6 +142,8 @@ class Evaluation(object):
             after_lstrip = len(text)
             start_span += before_lstrip - after_lstrip
             while text[0] in string.punctuation:
+                self.update_punc(text[0], annotator, who)
+
                 text = text[1:]
                 removed_space = len(text) - len(text.lstrip())
                 text = text.lstrip()
@@ -138,6 +160,14 @@ class Evaluation(object):
             #     text = text.lstrip()
             #     start_span = start_span+1+removed_spase
 
+        if who is "annotators" and original_text != text:
+            if annotator not in self.removed_punc_counter.keys():
+                self.removed_punc_counter[annotator] = 1
+            else:
+                temp = self.removed_punc_counter.get(annotator)
+                self.removed_punc_counter.update({annotator: temp+1})
+
+            # self.removed_punc_counter += 1
         return text, start_span, end_span
 
     def get_annotators_entities(self):
@@ -187,7 +217,7 @@ class Evaluation(object):
                                         # ended with a punctuations except of dot (.) and started with a punctuations
                                         # we fixed the span and saved it in a correct file (03, 02)...
                                         checking_text, checking_start, checking_end = \
-                                            self.span_fixer(checking_text, checking_start, checking_end, checking_label)
+                                            self.span_fixer(checking_text, checking_start, checking_end, checking_label, "annotators", dir)
                                     w_revised.write(
                                         temp_line[0] + "\t" + checking_label + " " + str(checking_start) + " " +
                                         str(checking_end) + "\t" + checking_text + "\n")
@@ -209,7 +239,7 @@ class Evaluation(object):
                                         # ended with a punctuations except of dot (.) and started with a punctuations
                                         # we fixed the span and saved it in a correct file (03, 02)...
                                         checking_text, checking_start, checking_end = \
-                                            self.span_fixer(checking_text, checking_start, checking_end, checking_label)
+                                            self.span_fixer(checking_text, checking_start, checking_end, checking_label, "annotators", dir)
                                     # w_revised.write(temp_line[0] + "\t" + checking_label + " " + str(checking_start) + " " +
                                     #                 str(checking_end) + "\t" + checking_text + "\n")
                                     entity['row'] = temp_line[0]
@@ -358,7 +388,40 @@ class Evaluation(object):
                 for rec in second_more:
                     csv_writer.writerow([rec] + ["", "X"])
 
+
+    def set_wrong_category(self, type, status, label):
+        if label == 'SECCION_DIAGNOSTICO_PRINCIPAL':
+            checl = 0
+        score = 2 if status == "Agreed" else 1
+        if type not in self.wrong_categories.keys():
+            status_record = {label: {status: score}}
+            self.wrong_categories[type] = status_record
+        else:
+            status_record_temp = self.wrong_categories[type]
+            if label not in status_record_temp.keys():
+                status_record_temp[label]= {status: score}
+            else:
+                label_temp = status_record_temp.get(label)
+                if status not in label_temp.keys():
+                    label_temp[status] = score
+                else:
+                    temp_status = label_temp.get(status)
+                    temp_status += score
+                    label_temp.update({status: temp_status})
+                status_record_temp.update({label:label_temp})
+            self.wrong_categories.update({type: status_record_temp})
+
+
+
+
+
+
+
     def IAA_Score_mismatched(self):
+
+        xlsx_details = os.path.join(save_statistical_dir, "Set_" + self.set + "_Details_of_IAA_Score_In_one_File.xlsx")
+        workbook_details = xlsxwriter.Workbook(xlsx_details)
+
 
         xlsx_mismatch = os.path.join(save_statistical_dir, "Set_" + self.set + "_All_MisMatching_Records.xlsx")
         workbook_mismatch = xlsxwriter.Workbook(xlsx_mismatch)
@@ -366,6 +429,10 @@ class Evaluation(object):
         xlsx_file = os.path.join(save_statistical_dir, "Set_" + self.set + "_IAA_Score.xlsx")
         workbook = xlsxwriter.Workbook(xlsx_file)
 
+        worksheet_details = workbook_details.add_worksheet("General_IAA_Score")
+
+        IAA_matrix_general_all = np.zeros((2, 2))
+        IAA_matrix_general_changed = np.zeros((2, 2))
         for file, annotators in self.shared_ann_files.items():
             IAA_matrix_all = np.zeros((2, 2))
             IAA_matrix_changed = np.zeros((2, 2))
@@ -392,6 +459,7 @@ class Evaluation(object):
                 worksheet.write(0, i + 4, annot)
                 worksheet_mismatch.write(0, i + 4, annot)
 
+
             worksheet.write(0, 0, "Label")
             worksheet_mismatch.write(0, 0, "Label")
 
@@ -415,8 +483,11 @@ class Evaluation(object):
                 second_more = set(annotators[list_annotators[1]]) - set(annotators[list_annotators[0]])
 
                 for rec in intersection:
+
                     rec_list = list(rec)
                     # temp_str = rec_list[0] + " " + str(rec_list[1]) + " " + str(rec_list[2]) + "\t" + rec_list[3]
+
+
 
                     list_ann = [1, 1]
                     IAA_matrix_all[0, 0] += 1
@@ -426,6 +497,11 @@ class Evaluation(object):
 
                     is_changed = self.isEntityChanged(file, list_annotators[0], rec_list)
                     IAA_matrix_changed[0, 0] += is_changed
+
+                    type = "CH_A" if is_changed + is_added > 0 else "AC"
+                    status = "Agreed"
+                    label = rec_list[0]
+                    self.set_wrong_category(type, status, label)
 
                     worksheet.write(counter, 0, rec_list[0])
                     worksheet.write(counter, 1, rec_list[1])
@@ -451,6 +527,11 @@ class Evaluation(object):
 
                     is_changed = self.isEntityChanged(file, list_annotators[0], rec_list)
                     IAA_matrix_changed[0, 1] += is_changed
+
+                    type = "CH_A" if is_changed + is_added > 0 else "AC"
+                    status = "Not_Agreed"
+                    label = rec_list[0]
+                    self.set_wrong_category(type, status, label)
 
                     worksheet.write(counter, 0, rec_list[0])
                     worksheet.write(counter, 1, rec_list[1])
@@ -483,6 +564,11 @@ class Evaluation(object):
                     is_changed = self.isEntityChanged(file, list_annotators[1], rec_list)
                     IAA_matrix_changed[1, 0] += is_changed
 
+                    type = "CH_A" if is_changed + is_added > 0 else "AC"
+                    status = "Not_Agreed"
+                    label = rec_list[0]
+                    self.set_wrong_category(type, status, label)
+
                     worksheet.write(counter, 0, rec_list[0])
                     worksheet.write(counter, 1, rec_list[1])
                     worksheet.write(counter, 2, rec_list[2])
@@ -501,6 +587,9 @@ class Evaluation(object):
                     worksheet_mismatch.write(counter_mistmatch, 5, list_ann[1])
                     counter_mistmatch += 1
 
+            IAA_matrix_general_all += IAA_matrix_all
+            IAA_matrix_general_changed += IAA_matrix_changed
+
             worksheet.write(0, 8, "% All")
             K = IAA_matrix_all[0][0] / (IAA_matrix_all[0][0] + IAA_matrix_all[0][1] + IAA_matrix_all[1][0])
             worksheet.write(0, 9, K)
@@ -518,8 +607,56 @@ class Evaluation(object):
             worksheet.write(0, 11, K)
             # worksheet.set_column(6, 6, 20)
 
+        worksheet_details.write(0, 0, "% All")
+        K = IAA_matrix_general_all[0][0] / (IAA_matrix_general_all[0][0] + IAA_matrix_general_all[0][1] + IAA_matrix_general_all[1][0])
+        worksheet_details.write(0, 1, K)
+
+        worksheet_details.set_column(2, 2, 20)
+
+        worksheet_details.write(0, 2, "% Changed and added:")
+        denominator = (IAA_matrix_general_changed[0][0] + IAA_matrix_general_changed[0][1] + IAA_matrix_general_changed[1][0])
+
+        if denominator == 0:
+            K = "No Changed and No Added"
+        else:
+            K = IAA_matrix_general_changed[0][0] / denominator
+
+        worksheet_details.write(0, 3, K)
+        worksheet_details = workbook_details.add_worksheet("Wrong_Variables_Details")
+
+        count = 1
+        status_agreed = "Agreed"
+        status_not_agreed = "Not_Agreed"
+        worksheet_details.write(0, 0, "Status of Annotation")
+        worksheet_details.write(0, 1, "Label")
+        worksheet_details.write(0, 2, "For how many files it happened:")
+        worksheet_details.write(0, 3, "For how many files annotators are agree:")
+        worksheet_details.write(0, 4, "For how many files annotators are not agree")
+        worksheet_details.write(0, 5, "Rate of agreement")
+        worksheet_details.set_column(0, 0, 15)
+        worksheet_details.set_column(1, 1, 40)
+        worksheet_details.set_column(2, 5, 20)
+        # worksheet_details.set_column(1, 4, 40)
+        for i, (type, labels) in enumerate(self.wrong_categories.items()):
+            type_details = "Accepted" if type == "AC" else "Changed_or_Added"
+            worksheet_details.write(count + i, 0, type_details)
+            count += 1
+            for (label, status) in labels.items():
+                num_status_agreed = status[status_agreed] if status.get(status_agreed) != None else 0
+                num_status_not_agreed = status[status_not_agreed] if status.get(status_not_agreed) != None else 0
+                worksheet_details.write(count , 1, label)
+                worksheet_details.write(count, 2, num_status_agreed + num_status_not_agreed)
+                worksheet_details.write(count, 3, num_status_agreed)
+                worksheet_details.write(count, 4, num_status_not_agreed)
+                score = None if num_status_agreed + num_status_not_agreed == 0 else (num_status_agreed / (num_status_agreed + num_status_not_agreed))
+                worksheet_details.write(count, 5, score)
+                count += 1
+
+
+
         workbook.close()
         workbook_mismatch.close()
+        workbook_details.close()
 
     def IAA(self):
 
@@ -581,7 +718,7 @@ class Evaluation(object):
                                     # for having a correct evaluation our pipeline tools with the manual, we should
                                     # apply the same for output of pipeline
                                     checking_text, checking_start, checking_end = \
-                                        self.span_fixer(checking_text, checking_start, checking_end, checking_label)
+                                        self.span_fixer(checking_text, checking_start, checking_end, checking_label, "ctakes", dir)
 
                                     if self.set.startswith("03") and temp_line[-1].replace("\n", "") != checking_text:
                                         print("ERROR!!!!!!")
@@ -871,9 +1008,13 @@ class Evaluation(object):
         with open(os.path.join(save_statistical_dir, "Set_" + self.set + "-Statistical_Analysis-Set.csv"),
                   "w") as stat_csv:
             csv_writer = csv.writer(stat_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            csv_writer.writerow([" "] + list(list(stat.values())[0].keys()))
+            csv_writer.writerow([" "] + list(list(stat.values())[0].keys()) + ["Number of fixed varibales and sections (spans)", "Removed punctuations"])
             for keys, values in stat.items():
-                csv_writer.writerow([keys] + list(values.values()))
+                csv_writer.writerow([keys] + list(values.values()) + [self.removed_punc_counter.get(keys)] + self.removed_punc.get(keys))
+
+            # csv_writer.writerow("----")
+            # csv_writer.writerow(["Removed punctuations"] + self.removed_punc)
+            # csv_writer.writerow(["Number varibales that fixed span happend", self.removed_punc_counter])
         stat_csv.close()
 
         return stat
@@ -1222,13 +1363,13 @@ if __name__ == "__main__":
     #
     evalu.statistical_analysis()
     #
-    # evalu.save_acceptance_rate()
-    # evalu.save_analysis()
-    # evalu.save_new_variables_sections()
-    #
-    # evalu.checking_new_section_added()
-    #
-    # evalu.NIHH_ASPECT_RANKIN_Finder()
+    evalu.save_acceptance_rate()
+    evalu.save_analysis()
+    evalu.save_new_variables_sections()
+
+    evalu.checking_new_section_added()
+
+    evalu.NIHH_ASPECT_RANKIN_Finder()
 
     if args.set_2 != None:
         checl = 0
