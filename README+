@@ -1,0 +1,25 @@
+For bunch 1,2,3 we revised manual annotations for varibalea and section that ended with a punctuations except of dot (.) and started with a punctuation.
+
+we fixed the span and saved it in a correct file (03, 02)...
+
+For Bunch 03, we uploaded the fixed version for punctuations (except of dot) of varibales (except of NIHSS, mRANKIN and ASPECTS, if annotatirs accepted them), DIAG. and PROC. in to the server and hide the previous one (.03)
+
+
+------------
+ Because we used a few list of dictionary on our pipeline (automatic pre-annotations), we run it again with the correct one and replace it in the pre-annotation folder and keep the wrong version as a 03_wrong.
+
+The original bunch 03 (wrong one), we used these dictionaries: Ictusnet_14.11.2019_bunch_3.txt and headers_13.11.2019_bunch_3_original.txt
+
+But the corrected once, we used: Ictusnet_28.11.2019_bunch_3.txt and Headers_17.12.2019_bunch_3.txt
+
+
+Also for pre-annotations bunch 3, we fixed punctuation for sections (all punctuations except of dot) in headerDetector project.
+
+And also fixed all punctuation for all variables in BratMerged Project.
+
+
+NOTE: 
+
+Important: Becuase our pipeline for now (18.11.2019) does not detect (NIHSS, mRANKIN, ASPECTS)'s spans perfectly. we are fixing them in BratMerged. But after improving the pipleline, we should remove this part. 
+
+

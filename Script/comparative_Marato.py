@@ -5,6 +5,7 @@ import os
 import xlsxwriter
 from collections import OrderedDict
 from Script import compareAnnotations
+from Script.utility import reading_duplicated_files
 
 fileDir = os.path.dirname(os.path.abspath(__file__))
 parentDir = os.path.dirname(fileDir)
@@ -20,13 +21,7 @@ file_hos = dict()
 annotators_dic = dict()
 
 
-def reading_duplicated_files(sset):
-    loaded_json = os.path.join(data_dir, "Duplicated_files.txt")
 
-    with open(loaded_json, 'r') as f:
-        distros_dict = json.load(f)
-
-    return distros_dict.get(sset)
 
 
 def reading_hopitals_files(Set):
@@ -135,7 +130,8 @@ def save_comparative_marato(comparative_dic, Set):
             suffix = ""
             if not file.startswith("son"):
                 suffix =  ".utf8"
-            worksheet.write_url(0, col+1, 'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + annotators_dic.get(file[-1]) + '/' + Set + '/' + file[0:-2] + suffix , string=file.upper())
+            worksheet.write_url(0, col+1, 'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + annotators_dic.get(file[-1]) +
+                                '/' + Set.split("_",1)[0] + '/' + file[0:-2] + suffix , string=file.upper())
             # worksheet.write(0, col+1, file.upper(), cell_format)
             counter = 1
             sum_c = 0
@@ -192,15 +188,16 @@ if __name__ == "__main__":
     parser.add_argument('--set', help='Which set is going to compare')
 
     args = parser.parse_args()
-    Set = args.set
-    duplicated_list = reading_duplicated_files(Set)
-    reading_hopitals_files(Set)
+    duplicated_list = reading_duplicated_files(args.set, data_dir)
+    reading_hopitals_files(args.set)
 
-    compareAnnotations.init(Set)
-    list_annotators = compareAnnotations.annators()
-    _, annotations, _, _ = compareAnnotations.pre_processing(list_annotators, Set)
-    comparative_dic = prepare_comparative(annotations, duplicated_list)
+    evalu = compareAnnotations.Evaluation()
+    evalu.init_paths(args.set)
+    evalu.annators_name()
 
-    save_comparative_marato(comparative_dic, Set)
+    evalu.get_annotators_entities()
+    comparative_dic = prepare_comparative(evalu.annotators_entities, duplicated_list)
 
-    print("DONE")
+    save_comparative_marato(comparative_dic, args.set)
+
+    print("---DONE---")
