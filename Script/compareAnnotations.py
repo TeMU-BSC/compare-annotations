@@ -181,7 +181,7 @@ class Evaluation(object):
                                     checking_start =  int(temp_line[1].split()[1])
                                     checking_end = int(temp_line[1].split()[2])
                                     checking_label = temp_line[1].split()[0]
-                                    if self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
+                                    if self.set.startswith("04")  or self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
                                         #For bunch 1,2,3 we revised manual annotations for varibalea and section that
                                         # ended with a punctuations except of dot (.) and started with a punctuations
                                         # we fixed the span and saved it in a correct file (03, 02)...
@@ -201,7 +201,7 @@ class Evaluation(object):
                                     checking_start =  int(temp_line[1].split()[1])
                                     checking_end = int(temp_line[1].split()[2])
                                     checking_label = temp_line[1].split()[0]
-                                    if self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
+                                    if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
                                         #For bunch 1,2,3 we revised manual annotations for varibalea and section that
                                         # ended with a punctuations except of dot (.) and started with a punctuations
                                         # we fixed the span and saved it in a correct file (03, 02)...
@@ -576,7 +576,7 @@ class Evaluation(object):
                                 checking_start = int(temp_line[1].split()[1])
                                 checking_end = int(temp_line[1].split()[2])
                                 checking_label = temp_line[1].split()[0]
-                                if self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
+                                if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
                                     # For bunch 1,2,3 we revised manual annotations for variables and sections that
                                     # ended with a punctuations except of dot (.) and started with a punctuations
                                     # we fixed the span and saved it in a correct file (03, 02)...
