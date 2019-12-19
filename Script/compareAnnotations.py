@@ -1010,7 +1010,9 @@ class Evaluation(object):
             csv_writer = csv.writer(stat_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             csv_writer.writerow([" "] + list(list(stat.values())[0].keys()) + ["Number of fixed varibales and sections (spans)", "Removed punctuations"])
             for keys, values in stat.items():
-                csv_writer.writerow([keys] + list(values.values()) + [self.removed_punc_counter.get(keys)] + self.removed_punc.get(keys))
+                puc_counter = 0 if self.removed_punc_counter.get(keys) == None else self.removed_punc_counter.get(keys)
+                puc = 0 if self.removed_punc.get(keys) == None else self.removed_punc.get(keys)
+                csv_writer.writerow([keys] + list(values.values()) + [puc_counter] + [puc])
 
             # csv_writer.writerow("----")
             # csv_writer.writerow(["Removed punctuations"] + self.removed_punc)
