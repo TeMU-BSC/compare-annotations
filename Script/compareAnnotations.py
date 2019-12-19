@@ -53,7 +53,7 @@ class Evaluation(object):
         self.shared_ann_files = None
 
         # self.data_dir = os.path.join(self.parentDir, "data")
-        # self.distros_dict = reading_duplicated_files(self.set, self.data_dir)
+        self.distros_dict = []
 
     def headers_dic(self, header):
         with open(header, "r") as h:
@@ -63,7 +63,6 @@ class Evaluation(object):
                     self.headers_name_dic[row_header[2]] = row_header[1]
                 if not row_header[1] in self.headers_type_dic.keys():
                     self.headers_type_dic[row_header[1]] = row_header[0]
-
 
     def variable_dic(self, header):
         with open(header, "r") as h:
@@ -76,7 +75,6 @@ class Evaluation(object):
                     temp = self.variables_name_dic[unaccented_string]
                     temp.append(row_header[1])
                     self.variables_name_dic.update({unaccented_string: temp})
-
 
     def init_paths(self, sset):
         self.set = sset
@@ -91,6 +89,9 @@ class Evaluation(object):
         ctakes_dir = os.path.join(main_dir, "pre_annotations")
         save_statistical_dir = os.path.join(all_differences_csv_dir, "statistical", self.set)
 
+        data_dir = os.path.join(self.parentDir, "data")
+        self.distros_dict = reading_duplicated_files(self.set, data_dir)
+
         shutil.rmtree(IAA_ANN_dir, ignore_errors=True)
         os.makedirs(IAA_ANN_dir, exist_ok=True)
         os.makedirs(IAA_CSV_dir, exist_ok=True)
@@ -102,7 +103,6 @@ class Evaluation(object):
                 list_annotators.append(sub_dir)
 
         self.list_annotators = list_annotators
-
 
     def span_fixer(self, text, start_span, end_span, label):
         if not (label.startswith("NIHSS") or label.startswith("mRankin") or label.startswith("ASPECTS")):
@@ -149,7 +149,7 @@ class Evaluation(object):
             list_files = []
             pre_pro = os.path.join(pre_processing_dir, dir, self.set)
 
-            pre_pro_revised = os.path.join(pre_processing_dir, dir, self.set.split("_",1)[0])
+            pre_pro_revised = os.path.join(pre_processing_dir, dir, self.set.split("_", 1)[0])
             os.makedirs(pre_pro_revised, exist_ok=True)
 
             os.makedirs(pre_pro, exist_ok=True)
@@ -166,8 +166,8 @@ class Evaluation(object):
                         entities = []
                         remove_ent = []
                         hash_ent = []
-                        with open(os.path.join(pre_pro, annotators_files), "w") as w,\
-                             open(os.path.join(pre_pro_revised, annotators_files), "w") as w_revised:
+                        with open(os.path.join(pre_pro, annotators_files), "w") as w, \
+                                open(os.path.join(pre_pro_revised, annotators_files), "w") as w_revised:
                             all_hash = []
                             keephash = []
                             for full_line in r:
@@ -178,17 +178,19 @@ class Evaluation(object):
                                 if not (full_line.startswith("#")):
                                     temp_line = full_line.split("\t", 2)
                                     checking_text = temp_line[-1].replace("\n", "")
-                                    checking_start =  int(temp_line[1].split()[1])
+                                    checking_start = int(temp_line[1].split()[1])
                                     checking_end = int(temp_line[1].split()[2])
                                     checking_label = temp_line[1].split()[0]
-                                    if self.set.startswith("04")  or self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
-                                        #For bunch 1,2,3 we revised manual annotations for varibalea and section that
+                                    if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith(
+                                            "02") or self.set.startswith("01"):
+                                        # For bunch 1,2,3 we revised manual annotations for varibalea and section that
                                         # ended with a punctuations except of dot (.) and started with a punctuations
                                         # we fixed the span and saved it in a correct file (03, 02)...
                                         checking_text, checking_start, checking_end = \
                                             self.span_fixer(checking_text, checking_start, checking_end, checking_label)
-                                    w_revised.write(temp_line[0] + "\t" + checking_label + " " + str(checking_start) + " " +
-                                                    str(checking_end) + "\t" + checking_text + "\n")
+                                    w_revised.write(
+                                        temp_line[0] + "\t" + checking_label + " " + str(checking_start) + " " +
+                                        str(checking_end) + "\t" + checking_text + "\n")
                                 else:
                                     w_revised.write(full_line)
 
@@ -198,11 +200,12 @@ class Evaluation(object):
                                     entity = {}
                                     temp_line = full_line.split("\t", 2)
                                     checking_text = temp_line[-1].replace("\n", "")
-                                    checking_start =  int(temp_line[1].split()[1])
+                                    checking_start = int(temp_line[1].split()[1])
                                     checking_end = int(temp_line[1].split()[2])
                                     checking_label = temp_line[1].split()[0]
-                                    if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
-                                        #For bunch 1,2,3 we revised manual annotations for varibalea and section that
+                                    if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith(
+                                            "02") or self.set.startswith("01"):
+                                        # For bunch 1,2,3 we revised manual annotations for varibalea and section that
                                         # ended with a punctuations except of dot (.) and started with a punctuations
                                         # we fixed the span and saved it in a correct file (03, 02)...
                                         checking_text, checking_start, checking_end = \
@@ -260,13 +263,12 @@ class Evaluation(object):
         file_dic = {}
         ann_file = {}
 
-        data_dir = os.path.join(self.parentDir, "data")
-        distros_dict = reading_duplicated_files(self.set, data_dir)
+
 
         for dir, files in self.annotators_entities.items():
             for file, records in files.items():
                 # source = os.path.join(annotators_dir, dir, self.set, file).replace(".ann", ".txt")
-                if file.replace(".ann", ".txt") in distros_dict:
+                if file.replace(".ann", ".txt") in self.distros_dict:
                     # copy(source, IAA_ANN_dir)
                     # if file_dic.get(file) is None:
                     #     file_dic[file] = 1
@@ -314,7 +316,7 @@ class Evaluation(object):
         self.shared_ann_files = ann_file
 
     def IAA_CSV_BRRAT(self):
-        w_mis =  open(os.path.join(save_statistical_dir, "Set_" + self.set + "_link_diff_files_in_Brat.txt"), "w")
+        w_mis = open(os.path.join(save_statistical_dir, "Set_" + self.set + "_link_diff_files_in_Brat.txt"), "w")
         for file, annotators in self.shared_ann_files.items():
             w_csv = open(os.path.join(IAA_CSV_dir, file + ".csv"), "w")
             csv_writer = csv.writer(w_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -380,8 +382,6 @@ class Evaluation(object):
 
             worksheet.set_column(6, 7, 10)
 
-
-
             worksheet.freeze_panes(1, 0)
             worksheet_mismatch.freeze_panes(1, 0)
 
@@ -391,7 +391,6 @@ class Evaluation(object):
             for i, annot in enumerate(list_annotators):
                 worksheet.write(0, i + 4, annot)
                 worksheet_mismatch.write(0, i + 4, annot)
-
 
             worksheet.write(0, 0, "Label")
             worksheet_mismatch.write(0, 0, "Label")
@@ -407,8 +406,6 @@ class Evaluation(object):
 
             worksheet.write(0, 6, "Changed")
             worksheet.write(0, 7, "Added")
-
-
 
             if len(list_annotators) == 2:
 
@@ -576,7 +573,8 @@ class Evaluation(object):
                                 checking_start = int(temp_line[1].split()[1])
                                 checking_end = int(temp_line[1].split()[2])
                                 checking_label = temp_line[1].split()[0]
-                                if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith("02") or self.set.startswith("01"):
+                                if self.set.startswith("04") or self.set.startswith("03") or self.set.startswith(
+                                        "02") or self.set.startswith("01"):
                                     # For bunch 1,2,3 we revised manual annotations for variables and sections that
                                     # ended with a punctuations except of dot (.) and started with a punctuations
                                     # we fixed the span and saved it in a correct file (03, 02)...
@@ -719,9 +717,10 @@ class Evaluation(object):
                             # if labels are same so it not changed, otherwise if it is not in removed ones it changed
                             if cta_ent['text'] == ann_ent['text']:
                                 if cta_ent['label'] == ann_ent['label'] or \
-                                        cta_ent['label'].replace("_previa", "").replace("_alta", "").replace("_hab","")\
+                                        cta_ent['label'].replace("_previa", "").replace("_alta", "").replace("_hab", "") \
                                         == "_SUG_" + \
-                                        ann_ent['label'].replace("_previa", "").replace("_alta", "").replace("_hab",""):
+                                        ann_ent['label'].replace("_previa", "").replace("_alta", "").replace("_hab",
+                                                                                                             ""):
                                     entity = {'Annotated': ann_ent['row'], 'cTAKES': cta_ent['row'],
                                               'text': cta_ent['text'], 'start': cta_ent['start'], 'end': cta_ent['end'],
                                               'label': cta_ent['label']}
@@ -769,9 +768,9 @@ class Evaluation(object):
                         if not file.startswith("son"):
                             suffix = ".utf8"
 
-
-                        dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + dir + "/" +\
-                                   self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[0].upper() + "_" + file + "\")"
+                        dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + dir + "/" + \
+                                   self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[
+                                       0].upper() + "_" + file + "\")"
                         if not (ann_ent['label'].startswith('Hora_') or ann_ent['label'].startswith('Fecha_') or
                                 ann_ent['label'].startswith('Tiempo_')):
                             if ann_ent['label'] + "|" + ann_ent['text'] not in new_variables.keys() and \
@@ -779,14 +778,15 @@ class Evaluation(object):
                                     ann_ent['text'].upper() not in new_variables.keys():
                                 if ann_ent['label'].startswith('SECCION_'):
                                     if self.headers_name_dic.get(ann_ent["text"].upper()) is None:
-                                        new_variables[ann_ent['label'].upper() + "|" + ann_ent['text'].upper()] =\
+                                        new_variables[ann_ent['label'].upper() + "|" + ann_ent['text'].upper()] = \
                                             [dir_file]
                                     else:
                                         print(dir + " " + file + " " + ' '.join(
                                             ['{0}: {1}'.format(k, v) for k, v in ann_ent.items()]))
                                 else:
                                     new_variables["_SUG_" + ann_ent['label'].
-                                        replace("_previa", "").replace("_alta", "").replace("_hab", "") + "|" + ann_ent['text']] = \
+                                        replace("_previa", "").replace("_alta", "").replace("_hab", "") + "|" + ann_ent[
+                                                      'text']] = \
                                         [dir_file]
                             else:
                                 temp_list = new_variables.get(
@@ -808,7 +808,8 @@ class Evaluation(object):
                                 else:
                                     temp_list.append(dir_file)
                                     update = {"_SUG_" + ann_ent['label']
-                                                     .replace("_previa", "").replace("_alta", "").replace("_hab","") + "|" + ann_ent['text']: temp_list}
+                                        .replace("_previa", "").replace("_alta", "").replace("_hab", "") + "|" +
+                                              ann_ent['text']: temp_list}
                                     new_variables.update(update)
 
                 adds[file] = add_ent
@@ -882,8 +883,7 @@ class Evaluation(object):
         statical_analysis_dir = os.path.join(all_differences_csv_dir, "statistical", self.set)
         os.makedirs(statical_analysis_dir, exist_ok=True)
 
-
-        with open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-NEW_VARIABLES.csv"), "w") as var_csv,\
+        with open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-NEW_VARIABLES.csv"), "w") as var_csv, \
                 open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-NEW_SECCION.csv"), "w") as sec_csv:
             var_writer = csv.writer(var_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             sec_writer = csv.writer(sec_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -892,13 +892,14 @@ class Evaluation(object):
 
             removed_list = ["_SUG_mRankin", "_SUG_NIHSS", "_SUG_ASPECTS"]
 
-            for keys, values in sorted(self.new_variables.items()) :
-                label_text = keys.split("|",1)
+            for keys, values in sorted(self.new_variables.items()):
+                label_text = keys.split("|", 1)
                 temp_line = " ".join(label_text[1].split())
                 if label_text[0].startswith("SECCION_"):
-                    if not(temp_line.upper() in self.headers_name_dic.keys()
+                    if not (temp_line.upper() in self.headers_name_dic.keys()
                             and self.headers_name_dic[temp_line.upper()] == label_text[0]):
-                        sec_writer.writerow([self.headers_type_dic.get(label_text[0])] + [label_text[0]] + [temp_line.upper()] + values)
+                        sec_writer.writerow(
+                            [self.headers_type_dic.get(label_text[0])] + [label_text[0]] + [temp_line.upper()] + values)
                 else:
                     unaccent_name = unidecode.unidecode(temp_line).lower()
                     if not (unaccent_name in self.variables_name_dic.keys()
@@ -906,15 +907,13 @@ class Evaluation(object):
                             and label_text[0] not in removed_list:
                         var_writer.writerow([""] + [label_text[0]] + [temp_line] + values)
                     elif (unaccent_name in self.variables_name_dic.keys()
-                            and label_text[0] in self.variables_name_dic[unaccent_name])\
+                          and label_text[0] in self.variables_name_dic[unaccent_name]) \
                             and label_text[0] not in removed_list:
                         print(temp_line, label_text[0], self.variables_name_dic.get(unaccent_name))
-
 
         var_csv.close()
         sec_csv.close()
         print("Finish new added Variables that we have already in our dictionary")
-
 
     def trim_name(self, name):
         unaccent_name = unidecode.unidecode(name)
@@ -927,7 +926,7 @@ class Evaluation(object):
 
     def call_span_checker_accepted(self, begin, line, records):
 
-        if records['text'][0] in string.punctuation or records['text'][len(records['text'])-1] in string.punctuation:
+        if records['text'][0] in string.punctuation or records['text'][len(records['text']) - 1] in string.punctuation:
             return False
 
         if records['label'].startswith('SECCION') and len(records['text']) <= 5:
@@ -935,10 +934,10 @@ class Evaluation(object):
             char_after = " "
 
             if begin < records['start']:
-                char_before = line[records['start']-1-begin]
+                char_before = line[records['start'] - 1 - begin]
 
             if begin + len(line) > records['end']:
-                char_after = line[records['end']-begin]
+                char_after = line[records['end'] - begin]
 
             unaccented_char_before = unidecode.unidecode(char_before)
             unaccented_char_after = unidecode.unidecode(char_after)
@@ -948,46 +947,44 @@ class Evaluation(object):
             else:
                 return True
         return True
+
     def call_span_checker(self, begin, line, records):
 
-        if records['text'][0] in string.punctuation or records['text'][len(records['text'])-1] in string.punctuation:
+        if records['text'][0] in string.punctuation or records['text'][len(records['text']) - 1] in string.punctuation:
             return False
 
         char_before = " "
         char_after = " "
         if begin < records['start']:
-            char_before = line[records['start']-1-begin]
+            char_before = line[records['start'] - 1 - begin]
 
         if begin + len(line) > records['end']:
-            char_after = line[records['end']-begin]
+            char_after = line[records['end'] - begin]
 
         unaccented_char_before = unidecode.unidecode(char_before)
         unaccented_char_after = unidecode.unidecode(char_after)
 
         if ((records['text'] == 'ACM' and unaccented_char_after == "I") or
-            (records['text'] == 'I' and unaccented_char_before == "M") or
-            (records['text'] == 'ACM' and unaccented_char_after == "e") or
-            (records['text'] == 'e' and unaccented_char_before == "M") or
-            (records['text'] == 'ACM' and unaccented_char_after == "D") or
-            (records['text'] == 'D' and unaccented_char_before == "M") or
-            (records['text'] == 'ACA' and unaccented_char_after == "I") or
-            (records['text'] == 'I' and unaccented_char_before == "A") or
+                (records['text'] == 'I' and unaccented_char_before == "M") or
+                (records['text'] == 'ACM' and unaccented_char_after == "e") or
+                (records['text'] == 'e' and unaccented_char_before == "M") or
+                (records['text'] == 'ACM' and unaccented_char_after == "D") or
+                (records['text'] == 'D' and unaccented_char_before == "M") or
+                (records['text'] == 'ACA' and unaccented_char_after == "I") or
+                (records['text'] == 'I' and unaccented_char_before == "A") or
 
-            (records['text'] == 'ACI' and unaccented_char_after == "D") or
-            (records['text'] == 'D' and unaccented_char_before == "I") or
+                (records['text'] == 'ACI' and unaccented_char_after == "D") or
+                (records['text'] == 'D' and unaccented_char_before == "I") or
 
-            (records['text'] == 'ACP' and unaccented_char_after == "I") or
-            (records['text'] == 'I' and unaccented_char_before == "P") or
+                (records['text'] == 'ACP' and unaccented_char_after == "I") or
+                (records['text'] == 'I' and unaccented_char_before == "P") or
 
-            (records['text'] == 'ACM' and unaccented_char_after == "s") or
-            (records['text'] == 's' and unaccented_char_before == "M") or
+                (records['text'] == 'ACM' and unaccented_char_after == "s") or
+                (records['text'] == 's' and unaccented_char_before == "M") or
 
-            (records['text'] == 'AIT' and unaccented_char_after == "s") or
-            (records['text'] == 's' and unaccented_char_before == "T")):
+                (records['text'] == 'AIT' and unaccented_char_after == "s") or
+                (records['text'] == 's' and unaccented_char_before == "T")):
             return True
-
-
-
 
         return not (unaccented_char_before.isalpha() or unaccented_char_after.isalpha())
 
@@ -1008,29 +1005,32 @@ class Evaluation(object):
         check_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-Suspicious_new_section.csv"), "w")
         check_writer = csv.writer(check_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        check_span_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-Suspicious_strange_spans.csv"), "w")
+        check_span_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-Suspicious_strange_spans.csv"),
+                              "w")
         check_span_writer = csv.writer(check_span_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-
-        check_etilogia_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_etilogia_variables.csv"), "w")
+        check_etilogia_csv = open(
+            os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_etilogia_variables.csv"), "w")
         check_etilogia_writer = csv.writer(check_etilogia_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
+        check_fre_etilogia_csv = open(
+            os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_freq_etilogia_variables.csv"), "w")
+        check_fre_etilogia_writer = csv.writer(check_fre_etilogia_csv, delimiter='\t', quotechar='"',
+                                               quoting=csv.QUOTE_MINIMAL)
 
-        check_fre_etilogia_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_freq_etilogia_variables.csv"), "w")
-        check_fre_etilogia_writer = csv.writer(check_fre_etilogia_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
-        etilogia_list = ["a estudio","aneurisma","angiopatía amiloide","ateromatosis","aterosclerótico",
-                         "Aterotrombótico","Cardioembólico","Cavernoma de circunvolución","Criptogènic",
-                         "criptogénico","Disecció","embòlic","embólico","ESUS","Hipertensiva","Indeterminado",
-                         "indeterminada","Indeterminado de causa doble",
-                         "Indeterminado por estudio incompleto","infrecuente","Inhabitual",
-                         "Lacunar","malformación arteriovenosa","mecanisme embòlic",
-                         "secundaria a malformación vascular","secundaria a tumor"]
+        etilogia_list = ["a estudio", "aneurisma", "angiopatía amiloide", "ateromatosis", "aterosclerótico",
+                         "Aterotrombótico", "Cardioembólico", "Cavernoma de circunvolución", "Criptogènic",
+                         "criptogénico", "Disecció", "embòlic", "embólico", "ESUS", "Hipertensiva", "Indeterminado",
+                         "indeterminada", "Indeterminado de causa doble",
+                         "Indeterminado por estudio incompleto", "infrecuente", "Inhabitual",
+                         "Lacunar", "malformación arteriovenosa", "mecanisme embòlic",
+                         "secundaria a malformación vascular", "secundaria a tumor"]
 
         etilogia_dict = dict()
         for dir, files in self.annotators_entities.items():
             for file, records in files.items():
-                records_not_order = self.adds_ann[dir][file] + self.changes_ann[dir][file] + self.no_changes_ann[dir][file]
+                records_not_order = self.adds_ann[dir][file] + self.changes_ann[dir][file] + self.no_changes_ann[dir][
+                    file]
                 records = sorted(records_not_order, key=lambda entity: entity['start'])
 
                 if file.startswith("sonespases_973918779"):
@@ -1048,12 +1048,12 @@ class Evaluation(object):
                     # Check if Etiligia word and the acceptable variables happens together in one line:
                     unaccented_line = unidecode.unidecode(self.remove_punc(line)).lower().split()
                     if "etiologia" in unaccented_line:
-                        for etilogial  in etilogia_list:
+                        for etilogial in etilogia_list:
                             unaccented_etilogial = unidecode.unidecode(etilogial).lower()
                             if unaccented_etilogial in unaccented_line:
                                 check_etilogia_writer.writerow([dir, file, etilogial, begin, line.strip()])
 
-                    for etilogial  in etilogia_list:
+                    for etilogial in etilogia_list:
                         unaccented_etilogial = unidecode.unidecode(etilogial).lower()
 
                         if unaccented_etilogial in unaccented_line and "etiologia" in unaccented_line:
@@ -1061,14 +1061,14 @@ class Evaluation(object):
                                 etilogia_dict[unaccented_etilogial] = {"with": 1, "notwith": 0}
                             else:
                                 temp = etilogia_dict[unaccented_etilogial]
-                                temp.update({"with" : temp["with"] + 1, "notwith": temp["notwith"]})
+                                temp.update({"with": temp["with"] + 1, "notwith": temp["notwith"]})
                                 etilogia_dict.update({unaccented_etilogial: temp})
                         elif unaccented_etilogial in unaccented_line and "etiologia" not in unaccented_line:
                             if unaccented_etilogial not in etilogia_dict.keys():
                                 etilogia_dict[unaccented_etilogial] = {"with": 0, "notwith": 1}
                             else:
                                 temp = etilogia_dict[unaccented_etilogial]
-                                temp.update({"with" : temp["with"], "notwith": temp["notwith"]+1})
+                                temp.update({"with": temp["with"], "notwith": temp["notwith"] + 1})
                                 etilogia_dict.update({unaccented_etilogial: temp})
                     # Finish checking
 
@@ -1083,8 +1083,9 @@ class Evaluation(object):
                                            self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                                0].upper() + "_" + file + "\")"
                                 check_span_writer.writerow([dir_file] + [records[records_seek]['label'],
-                                                           records[records_seek]['start'],records[records_seek]['end']
-                                                           , records[records_seek]['text']] + ["Accepted"])
+                                                                         records[records_seek]['start'],
+                                                                         records[records_seek]['end']
+                                    , records[records_seek]['text']] + ["Accepted"])
                         else:
                             is_correct = self.call_span_checker(begin, line, records[records_seek])
                             if not is_correct and not (records[records_seek]['label'].startswith("Fecha_") or
@@ -1094,8 +1095,9 @@ class Evaluation(object):
                                            self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                                0].upper() + "_" + file + "\")"
                                 check_span_writer.writerow([dir_file] + [records[records_seek]['label'],
-                                                           records[records_seek]['start'],records[records_seek]['end']
-                                                           , records[records_seek]['text']])
+                                                                         records[records_seek]['start'],
+                                                                         records[records_seek]['end']
+                                    , records[records_seek]['text']])
 
                         records_seek += 1
                     # elif records[records_seek]['start'] < begin or records[records_seek]['end'] > begin + line_size:
@@ -1131,8 +1133,6 @@ class Evaluation(object):
         check_etilogia_csv.close()
         check_fre_etilogia_csv.close()
 
-
-
     def save_acceptance_rate(self):
         ordered_acceptance_rate = OrderedDict(sorted(self.acceptance_rate.items(), key=lambda t: t[0]))
 
@@ -1141,7 +1141,8 @@ class Evaluation(object):
 
         freq_all_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-acceptance_freq_all.csv"), "w")
 
-        freq_top_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-acceptance_freq_top_low.csv"),"w")
+        freq_top_csv = open(os.path.join(statical_analysis_dir, "Set_" + self.set + "-acceptance_freq_top_low.csv"),
+                            "w")
 
         freq_all_writer = csv.writer(freq_all_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         freq_top_writer = csv.writer(freq_top_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -1177,11 +1178,14 @@ class Evaluation(object):
             for file, records in self.annotators_entities.get(dir).items():
 
                 for record in records:
-                    if record['label'].replace("_previa", "").replace("_alta", "").replace("_hab", "") in pattern_list and record['text'] not in need_pattern.keys() :
+                    if record['label'].replace("_previa", "").replace("_alta", "").replace("_hab",
+                                                                                           "") in pattern_list and \
+                            record['text'] not in need_pattern.keys():
                         need_pattern[record['text']] = record
 
         for keys, values in need_pattern.items():
-            check_writer.writerow([values['label'].replace("_previa", "").replace("_alta", "").replace("_hab", ""), keys])
+            check_writer.writerow(
+                [values['label'].replace("_previa", "").replace("_alta", "").replace("_hab", ""), keys])
 
     def merge(self, a, b, path=None):
         "merges b into a"
@@ -1201,7 +1205,6 @@ class Evaluation(object):
     # works
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="comparing")
     parser.add_argument('--set', help='Which set is going to compare')
@@ -1219,13 +1222,13 @@ if __name__ == "__main__":
     #
     evalu.statistical_analysis()
     #
-    evalu.save_acceptance_rate()
-    evalu.save_analysis()
-    evalu.save_new_variables_sections()
-
-    evalu.checking_new_section_added()
-
-    evalu.NIHH_ASPECT_RANKIN_Finder()
+    # evalu.save_acceptance_rate()
+    # evalu.save_analysis()
+    # evalu.save_new_variables_sections()
+    #
+    # evalu.checking_new_section_added()
+    #
+    # evalu.NIHH_ASPECT_RANKIN_Finder()
 
     if args.set_2 != None:
         checl = 0
@@ -1238,13 +1241,9 @@ if __name__ == "__main__":
         evalu2.get_annotators_entities()  # Also save in pre_process folder
         evalu2.get_ctakes_entities()
 
-        evalu2.merge(evalu2.annotators_entities, evalu.annotators_entities)
+        evalu.merge(evalu.annotators_entities, evalu2.annotators_entities)
 
-
-
-
-
-
+        evalu.distros_dict = list(set(evalu2.all_files_list).intersection(evalu.all_files_list))
 
     evalu.IAA()
 
