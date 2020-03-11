@@ -17,7 +17,6 @@ from Script.utility import reading_duplicated_files
 
 class Evaluation(object):
 
-
     def __init__(self):
         # set = None
         # annotators_dir = ""
@@ -69,6 +68,13 @@ class Evaluation(object):
         self.required_headers = ["SECCION_DIAGNOSTICO_PRINCIPAL", "SECCION_DIAGNOSTICOS"]
         self.required_main_variables = ["Ictus_isquemico", "Ataque_isquemico_transitorio", "Hemorragia_cerebral"]
         self.required_second_variables = ["Arteria_afectada", "Localizacion", "Lateralizacion", "Etiologia"]
+
+
+        self.fecha_hora_dependecies = {"TAC_craneal" : ["Fecha_TAC_inicial", "Hora_TAC_inicial"],
+                                  "Trombectomia_mecanica": ["Fecha_fin_trombectomia", "Fecha_inicio_trombectomia", "Fecha_primera_serie_trombectomia", "Hora_fin_trombectomia", "Hora_inicio_trombectomia", "Hora_primera_serie_trombectomia"],
+                                   "Trombolisis_intravenosa": ["Fecha_trombolisis_rtPA", "Hora_primer_bolus_trombolisis_rtPA"],
+                                  "Recanalizacion": ["Fecha_recanalizacion", "Fecha_recanalizacion"],
+                                  "Puerta_aguja": ["Tiempo_puerta_aguja"]}
 
     def headers_dic(self, header):
         with open(header, "r") as h:
@@ -124,7 +130,8 @@ class Evaluation(object):
                 list_annotators.append(sub_dir)
 
         self.list_annotators = list_annotators
-        # self.list_annotators.remove("eugenia")
+        # self.list_annotators = ['eulalia', 'isabel', 'carmen']
+        self.list_annotators.remove("eulalia")
 
     def update_punc(self, punc, annotator, who):
         if who is "annotators" and punc not in self.removed_punc:
@@ -359,7 +366,8 @@ class Evaluation(object):
                     # records_list = []
                     for record in records:
                         records_list = [(record["label"], record["start"], record["end"], record["text"])]
-                        records_dic = [{"label": record["label"], "start": record["start"], "end": record["end"], "text" : record["text"]}]
+                        records_dic = [{"label": record["label"], "start": record["start"], "end": record["end"],
+                                        "text": record["text"]}]
                         if dir not in ann_records.keys():
                             ann_records[dir] = records_list
                             ann_records_dic[dir] = records_dic
@@ -463,14 +471,13 @@ class Evaluation(object):
             row = line.strip().split("\t")
             word = unidecode.unidecode(row[2].lower())
             if row[1] not in self.direct_cat.keys():
-                self.direct_cat[row[1]] = {"variabel":[word], "code": row[0]}
+                self.direct_cat[row[1]] = {"variabel": [word], "code": row[0]}
             else:
                 temp = self.direct_cat[row[1]]
                 temp_variable = temp["variabel"]
                 temp_variable.append(word)
-                temp_new = {"variabel":temp_variable, "code": temp["code"]}
+                temp_new = {"variabel": temp_variable, "code": temp["code"]}
                 self.direct_cat.update({row[1]: temp_new})
-
 
         for line in not_dir_cat_file:
             row = line.strip().split("\t")
@@ -498,13 +505,13 @@ class Evaluation(object):
         else:
             return None, None, None, None
 
-
     def note_normolized_finder(self, file, annotator, rec, list_notes):
         records = self.annotators_entities[annotator][file]
         row = None
         normolized = None
         for record in records:
-            if record["label"] == rec[0] and record["start"] == rec[1]  and record["end"] == rec[2] and record["text"] == rec[3]:
+            if record["label"] == rec[0] and record["start"] == rec[1] and record["end"] == rec[2] and record["text"] == \
+                    rec[3]:
                 row = record['row']
 
         for notes in list_notes:
@@ -519,29 +526,29 @@ class Evaluation(object):
         else:
             word, label, code, sim = self.find_max_similarity_cat(record)
             if code is not None:
-                return label+ "_" + code
+                return label + "_" + code
             else:
                 return None
-
 
     def counter_category_diagnostic(self, annotators):
         count_variabe_diagnostic = dict()
         for dir, records in annotators.items():
             unique_variabes_diagnostic = []
             for record in records:
-                if record[0] in self.required_headers or record[0] in self.required_main_variables or record[0] in self.required_second_variables:
-                        var_diag = self.code_checker(record)
-                        if var_diag not in unique_variabes_diagnostic and var_diag is not None:
-                            unique_variabes_diagnostic.append(var_diag)
-                        if var_diag is None:
-                            checkpoint = True
+                if record[0] in self.required_headers or record[0] in self.required_main_variables or record[
+                    0] in self.required_second_variables:
+                    var_diag = self.code_checker(record)
+                    if var_diag not in unique_variabes_diagnostic and var_diag is not None:
+                        unique_variabes_diagnostic.append(var_diag)
+                    if var_diag is None:
+                        checkpoint = True
             for cat in unique_variabes_diagnostic:
                 if cat not in count_variabe_diagnostic.keys():
                     count_variabe_diagnostic[cat] = 1
                 else:
                     temp = count_variabe_diagnostic[cat]
                     temp += 1
-                    count_variabe_diagnostic.update({cat:temp})
+                    count_variabe_diagnostic.update({cat: temp})
 
         return count_variabe_diagnostic
 
@@ -563,7 +570,9 @@ class Evaluation(object):
                     if correct_header and record[0] in self.required_main_variables:
                         correct_diag = True
 
-                    if correct_header and (record[0] in self.required_headers or record[0] in self.required_main_variables or record[0] in self.required_second_variables):
+                    if correct_header and (
+                            record[0] in self.required_headers or record[0] in self.required_main_variables or record[
+                        0] in self.required_second_variables):
                         filtered_records.append(record)
                 # elif not (record[0] in self.required_headers or record[0] in self.required_main_variables or record[0] in self.required_second_variables):
                 #     # keep other variables (required_main_variables and required_second_variables)
@@ -571,9 +580,9 @@ class Evaluation(object):
 
             filtered_annotators[dir] = filtered_records
             if not correct_diag:
-                print("In", file + ",", dir, "did not annotated:", "Ictus_isquemico", "Ataque_isquemico_transitorio", "Hemorragia_cerebral", "in Diagnostic Secccion")
+                print("In", file + ",", dir, "did not annotated:", "Ictus_isquemico", "Ataque_isquemico_transitorio",
+                      "Hemorragia_cerebral", "in Diagnostic Secccion")
         return filtered_annotators
-
 
     def filter_on_diagnotstic_everywhere(self, annotators):
 
@@ -581,7 +590,19 @@ class Evaluation(object):
         for dir, records in annotators.items():
             filtered_records = []
             for record in records:
-                if record[0] in self.required_headers or record[0] in self.required_main_variables or record[0] in self.required_second_variables:
+                if record[0] in self.required_headers or record[0] in self.required_main_variables or record[
+                    0] in self.required_second_variables:
+                    filtered_records.append(record)
+            filtered_annotators[dir] = filtered_records
+        return filtered_annotators
+
+    def filter_section(self, annotators):
+
+        filtered_annotators = dict()
+        for dir, records in annotators.items():
+            filtered_records = []
+            for record in records:
+                if not record[0].startswith("SECCION_"):
                     filtered_records.append(record)
             filtered_annotators[dir] = filtered_records
         return filtered_annotators
@@ -596,76 +617,92 @@ class Evaluation(object):
                 count_variabe_diagnostic.update({cat_diag: temp})
         return count_variabe_diagnostic
 
-
-
     def IAA_Score_mismatched(self):
-
         self.load_categories()
 
-        xlsx_details = os.path.join(save_statistical_dir, "Set_" + self.set + "_Details_of_IAA_Score_In_one_File.xlsx")
+        filter_seccion = True
+        filter_seccion_diag = False
+
+        if filter_seccion_diag:
+            xlsx_file_details_codemapper = os.path.join(save_statistical_dir,
+                                                        "Set_" + self.set + "_Details_of_IAA_Score_CodeMapper_Diag_without_Seccion.xlsx")
+            xlsx_details = os.path.join(save_statistical_dir,
+                                        "Set_" + self.set + "_Details_of_IAA_Score_In_one_File_Diag_without_Seccion.xlsx")
+            xlsx_mismatch = os.path.join(save_statistical_dir,
+                                         "Set_" + self.set + "_All_MisMatching_Records_Diag_without_Seccion.xlsx")
+            xlsx_file = os.path.join(save_statistical_dir, "Set_" + self.set + "_IAA_Score_Diag_without_Seccion.xlsx")
+            xlsx_file_CodeMapper = os.path.join(save_statistical_dir,
+                                                "Set_" + self.set + "_IAA_Score_CodeMapper_Diag_without_Seccion.xlsx")
+        elif filter_seccion:
+            xlsx_file_details_codemapper = os.path.join(save_statistical_dir,
+                                                        "Set_" + self.set + "_Details_of_IAA_Score_CodeMapper_All_Annotations_Without_Seccion.xlsx")
+            xlsx_details = os.path.join(save_statistical_dir,
+                                        "Set_" + self.set + "_Details_of_IAA_Score_In_one_File_All_Annotations_Without_Seccion.xlsx")
+            xlsx_mismatch = os.path.join(save_statistical_dir,
+                                         "Set_" + self.set + "_All_MisMatching_Records_All_Annotations_Without_Seccion.xlsx")
+            xlsx_file = os.path.join(save_statistical_dir,
+                                     "Set_" + self.set + "_IAA_Score.xlsx_All_Annotations_Without_Seccion.xlsx")
+            xlsx_file_CodeMapper = os.path.join(save_statistical_dir,
+                                                "Set_" + self.set + "_IAA_Score_CodeMapper_All_Annotations_Without_Seccion.xlsx")
+        else:
+            xlsx_file_details_codemapper = os.path.join(save_statistical_dir,
+                                                        "Set_" + self.set + "_Details_of_IAA_Score_CodeMapper.xlsx")
+            xlsx_details = os.path.join(save_statistical_dir,
+                                        "Set_" + self.set + "_Details_of_IAA_Score_In_one_File.xlsx")
+            xlsx_mismatch = os.path.join(save_statistical_dir, "Set_" + self.set + "_All_MisMatching_Records.xlsx")
+            xlsx_file = os.path.join(save_statistical_dir, "Set_" + self.set + "_IAA_Score.xlsx")
+            xlsx_file_CodeMapper = os.path.join(save_statistical_dir, "Set_" + self.set + "_IAA_Score_CodeMapper.xlsx")
+
+        workbook_details_codemapper = xlsxwriter.Workbook(xlsx_file_details_codemapper)
         workbook_details = xlsxwriter.Workbook(xlsx_details)
         worksheet_details = workbook_details.add_worksheet("General_IAA_Score")
 
-        xlsx_mismatch = os.path.join(save_statistical_dir, "Set_" + self.set + "_All_MisMatching_Records.xlsx")
         workbook_mismatch = xlsxwriter.Workbook(xlsx_mismatch)
-
-        xlsx_file = os.path.join(save_statistical_dir, "Set_" + self.set + "_IAA_Score.xlsx")
         workbook = xlsxwriter.Workbook(xlsx_file)
-
-
-        xlsx_file_new = os.path.join(save_statistical_dir, "Set_" + self.set + "_IAA_Score_NEW_VERSION.xlsx")
-        workbook_new = xlsxwriter.Workbook(xlsx_file_new)
-
-        xlsx_file_just = os.path.join(save_statistical_dir, "Set_" + self.set + "_JUST_IAA_Score.xlsx")
-        workbook_just = xlsxwriter.Workbook(xlsx_file_just)
-        worksheet_just = workbook_just.add_worksheet(self.set)
-        worksheet_just.write(0, 0, 'File')
-        worksheet_just.write(0, 1, "New")
-        # worksheet_just.write(0, 2, "Changed_Added")
-        worksheet_just.write(0, 2, "Original")
-        worksheet_just.write(0, 3, "Diff")
-        worksheet_just.set_column(0, 3, 30)
+        workbook_CodeMapper = xlsxwriter.Workbook(xlsx_file_CodeMapper)
         just_row = 1
+        worksheet_details_codemapper = workbook_details_codemapper.add_worksheet(self.set)
+        worksheet_details_codemapper.write(0, 0, 'File')
+        worksheet_details_codemapper.write(0, 1, "CodeMapper")
+        # worksheet_details_codemapper.write(0, 2, "Changed_Added")
+        worksheet_details_codemapper.write(0, 2, "Original")
+        worksheet_details_codemapper.write(0, 3, "Diff")
+        worksheet_details_codemapper.set_column(0, 3, 30)
 
-        removed_variable = ["Localizacion", "Etiologia"]
-
-
+        # removed_variable = ["Localizacion", "Etiologia"]
         IAA_matrix_general_all = np.zeros((2, 2))
         IAA_matrix_general_changed = np.zeros((2, 2))
-
         count_variabe_diagnostic_diag = dict()
         count_variabe_diagnostic = dict()
-
+        compare_annotator_IAA = dict()
+        compare_annotator_IAA_codeMapper = dict()
         for file, annotators in self.shared_ann_files.items():
-
-            if file == "sonespases_954507767.ann":
-                check = 0
-
             # calculate number of new categories in Diagnostic Seccion
-            count_variabe_diagnostic = self.counter_variable_diag(self.counter_category_diagnostic(annotators), count_variabe_diagnostic)
-
-            annotators = self.filter_on_diagnotstic(file, annotators)
+            # count_variabe_diagnostic = self.counter_variable_diag(self.counter_category_diagnostic(annotators), count_variabe_diagnostic)
+            # annotators = self.filter_on_diagnotstic(file, annotators)
+            if filter_seccion_diag:
+                annotators = self.filter_on_diagnotstic(file, annotators)
+                annotators = self.filter_section(annotators)
+            elif filter_seccion:
+                annotators = self.filter_section(annotators)
 
             # annotators = self.filter_on_diagnotstic_everywhere(annotators)
-            count_variabe_diagnostic_diag = self.counter_variable_diag(self.counter_category_diagnostic(annotators), count_variabe_diagnostic_diag)
-
+            # count_variabe_diagnostic_diag = self.counter_variable_diag(self.counter_category_diagnostic(annotators), count_variabe_diagnostic_diag)
 
             IAA_matrix_all = np.zeros((2, 2))
 
-
-
-            IAA_matrix_all_filtered = np.zeros((2, 2))
-            IAA_matrix_all_new_filtered = np.zeros((2, 2))
-            IAA_matrix_all_new = np.zeros((2, 2))
+            # IAA_matrix_all_filtered = np.zeros((2, 2))
+            # IAA_matrix_all_CodeMapper_filtered = np.zeros((2, 2))
+            IAA_matrix_all_CodeMapper = np.zeros((2, 2))
             IAA_matrix_changed = np.zeros((2, 2))
 
             worksheet = workbook.add_worksheet(file)
-            worksheet_new = workbook_new.add_worksheet(file)
+            worksheet_CodeMapper = workbook_CodeMapper.add_worksheet(file)
             worksheet_mismatch = workbook_mismatch.add_worksheet(file)
 
             counter = 1
             counter_mistmatch = 1
-            counter_new = 1
+            counter_CodeMapper = 1
 
             worksheet.set_column(0, 0, 40)
             worksheet_mismatch.set_column(0, 0, 40)
@@ -674,11 +711,10 @@ class Evaluation(object):
             worksheet.set_column(6, 7, 10)
             worksheet.freeze_panes(1, 0)
 
-
-            # worksheet_new.set_column(0, 0, 40)
-            # worksheet_new.set_column(3, 3, 30)
-            # worksheet_new.set_column(6, 7, 10)
-            worksheet_new.freeze_panes(1, 0)
+            # worksheet_CodeMapper.set_column(0, 0, 40)
+            # worksheet_CodeMapper.set_column(3, 3, 30)
+            # worksheet_CodeMapper.set_column(6, 7, 10)
+            worksheet_CodeMapper.freeze_panes(1, 0)
             worksheet_mismatch.freeze_panes(1, 0)
 
             list_annotators = list(annotators.keys())
@@ -687,7 +723,7 @@ class Evaluation(object):
             for i, annot in enumerate(list_annotators):
                 worksheet.write(0, i + 4, annot)
                 worksheet_mismatch.write(0, i + 4, annot)
-                worksheet_new.write(0, i + 10, annot)
+                worksheet_CodeMapper.write(0, i + 10, annot)
 
             worksheet.write(0, 0, "Label")
             worksheet_mismatch.write(0, 0, "Label")
@@ -704,16 +740,16 @@ class Evaluation(object):
             worksheet.write(0, 6, "Changed")
             worksheet.write(0, 7, "Added")
 
-            worksheet_new.write(0, 0, "Label")
-            worksheet_new.write(0, 1, "Code")
-            worksheet_new.write(0, 2, "Start")
-            worksheet_new.write(0, 3, "End")
-            worksheet_new.write(0, 4, "Text")
-            worksheet_new.write(0, 5, "Label")
-            worksheet_new.write(0, 6, "Code")
-            worksheet_new.write(0, 7, "Start")
-            worksheet_new.write(0, 8, "End")
-            worksheet_new.write(0, 9, "Text")
+            worksheet_CodeMapper.write(0, 0, "Label")
+            worksheet_CodeMapper.write(0, 1, "Code")
+            worksheet_CodeMapper.write(0, 2, "Start")
+            worksheet_CodeMapper.write(0, 3, "End")
+            worksheet_CodeMapper.write(0, 4, "Text")
+            worksheet_CodeMapper.write(0, 5, "Label")
+            worksheet_CodeMapper.write(0, 6, "Code")
+            worksheet_CodeMapper.write(0, 7, "Start")
+            worksheet_CodeMapper.write(0, 8, "End")
+            worksheet_CodeMapper.write(0, 9, "Text")
 
             if len(list_annotators) == 2:
 
@@ -722,20 +758,17 @@ class Evaluation(object):
                 first_more = set(annotators[list_annotators[0]]) - set(annotators[list_annotators[1]])
                 second_more = set(annotators[list_annotators[1]]) - set(annotators[list_annotators[0]])
 
-                first_more_new = first_more.copy()
-                second_more_new = second_more.copy()
+                first_more_CodeMapper = first_more.copy()
+                second_more_CodeMapper = second_more.copy()
 
                 for rec in intersection:
                     rec_list = list(rec)
                     # temp_str = rec_list[0] + " " + str(rec_list[1]) + " " + str(rec_list[2]) + "\t" + rec_list[3]
 
                     list_ann = [1, 1]
-                    if not (rec_list[0].startswith("SECCION_") or rec_list[0] in removed_variable):
-                        IAA_matrix_all_filtered[0, 0] += 1
-                        IAA_matrix_all_new_filtered[0, 0] += 1
 
                     IAA_matrix_all[0, 0] += 1
-                    IAA_matrix_all_new[0, 0] += 1
+                    IAA_matrix_all_CodeMapper[0, 0] += 1
 
                     is_added = self.isEntityAdded(file, list_annotators[0], rec_list)
                     IAA_matrix_changed[0, 0] += is_added
@@ -758,28 +791,24 @@ class Evaluation(object):
                     worksheet.write(counter, 6, is_changed)
                     worksheet.write(counter, 7, is_added)
 
-
-                    worksheet_new.write(counter_new, 0, rec_list[0])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 0, rec_list[0])
 
                     if rec_list[0] in self.direct_cat.keys():
                         code = self.direct_cat[rec_list[0]]["code"]
                     else:
-                        _,_,code,_ = self.find_max_similarity_cat(rec_list)
+                        _, _, code, _ = self.find_max_similarity_cat(rec_list)
 
-                    worksheet_new.write(counter_new, 1, code)
+                    worksheet_CodeMapper.write(counter_CodeMapper, 1, code)
 
-                    worksheet_new.write(counter_new, 2, rec_list[1])
-                    worksheet_new.write(counter_new, 3, rec_list[2])
-                    worksheet_new.write(counter_new, 4, rec_list[3])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 2, rec_list[1])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 3, rec_list[2])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 4, rec_list[3])
 
-                    worksheet_new.write(counter_new, 10, list_ann[0])
-                    worksheet_new.write(counter_new, 11, list_ann[1])
-
-
+                    worksheet_CodeMapper.write(counter_CodeMapper, 10, list_ann[0])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 11, list_ann[1])
 
                     counter += 1
-                    counter_new += 1
-
+                    counter_CodeMapper += 1
 
                 for rec_f in first_more:
                     max_score = -1
@@ -787,7 +816,7 @@ class Evaluation(object):
                     code2 = None
                     if rec_f[0] in self.direct_cat.keys():
                         code1 = self.direct_cat[rec_f[0]]["code"]
-                        for rec_s in second_more_new:
+                        for rec_s in second_more_CodeMapper:
                             if rec_s[0] in self.direct_cat.keys():
                                 if rec_s[0] == rec_f[0]:
                                     code2 = self.direct_cat[rec_s[0]]["code"]
@@ -797,7 +826,7 @@ class Evaluation(object):
                     else:
                         word1, label1, code1, sim1 = self.find_max_similarity_cat(rec_f)
                         if word1 is not None:
-                            for rec_s in second_more_new:
+                            for rec_s in second_more_CodeMapper:
                                 word2, label2, code2, sim2 = self.find_max_similarity_cat(rec_s)
                                 if label1 == label2 and code1 == code2 and sim2 > max_score:
                                     rec2 = rec_s
@@ -816,85 +845,71 @@ class Evaluation(object):
                             fht = False
 
                         if fht or (normolized_note_1 == normolized_note_2 or rec_f[3] == rec2[3]):
-                            IAA_matrix_all_new[0, 0] += 1
+                            IAA_matrix_all_CodeMapper[0, 0] += 1
 
-                            if not (rec2[0].startswith("SECCION_") or rec2[0] in removed_variable):
-                                IAA_matrix_all_new_filtered[0, 0] += 1
+                            worksheet_CodeMapper.write(counter_CodeMapper, 0, rec_f[0])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 1, code1)
+                            worksheet_CodeMapper.write(counter_CodeMapper, 2, rec_f[1])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 3, rec_f[2])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 4, rec_f[3])
 
+                            worksheet_CodeMapper.write(counter_CodeMapper, 5, rec2[0])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 6, code2)
+                            worksheet_CodeMapper.write(counter_CodeMapper, 7, rec2[1])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 8, rec2[2])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 9, rec2[3])
 
-                            worksheet_new.write(counter_new, 0, rec_f[0])
-                            worksheet_new.write(counter_new, 1, code1)
-                            worksheet_new.write(counter_new, 2, rec_f[1])
-                            worksheet_new.write(counter_new, 3, rec_f[2])
-                            worksheet_new.write(counter_new, 4, rec_f[3])
+                            worksheet_CodeMapper.write(counter_CodeMapper, 10, 1)
+                            worksheet_CodeMapper.write(counter_CodeMapper, 11, 1)
 
-                            worksheet_new.write(counter_new, 5, rec2[0])
-                            worksheet_new.write(counter_new, 6, code2)
-                            worksheet_new.write(counter_new, 7, rec2[1])
-                            worksheet_new.write(counter_new, 8, rec2[2])
-                            worksheet_new.write(counter_new, 9, rec2[3])
+                            first_more_CodeMapper.remove(rec_f)
+                            second_more_CodeMapper.remove(rec2)
 
-                            worksheet_new.write(counter_new, 10, 1)
-                            worksheet_new.write(counter_new, 11, 1)
+                            counter_CodeMapper += 1
 
-                            first_more_new.remove(rec_f)
-                            second_more_new.remove(rec2)
-
-                            counter_new += 1
-
-                for rec in first_more_new:
+                for rec in first_more_CodeMapper:
                     rec_list = list(rec)
                     # temp_str = rec_list[0] + " " + str(rec_list[1]) + " " + str(rec_list[2]) + "\t" + rec_list[3]
 
                     list_ann = [1, 0]
-                    IAA_matrix_all_new[0, 1] += 1
-                    if not (rec[0].startswith("SECCION_") or rec[0] in removed_variable):
-                        IAA_matrix_all_new_filtered[0, 1] += 1
+                    IAA_matrix_all_CodeMapper[0, 1] += 1
 
-                    worksheet_new.write(counter_new, 0, rec_list[0])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 0, rec_list[0])
                     if rec_list[0] in self.direct_cat.keys():
                         code1 = self.direct_cat[rec_list[0]]["code"]
                     else:
-                        _,_,code1,_ = self.find_max_similarity_cat(rec_list)
+                        _, _, code1, _ = self.find_max_similarity_cat(rec_list)
 
-                    worksheet_new.write(counter_new, 1, code1)
-                    worksheet_new.write(counter_new, 2, rec_list[1])
-                    worksheet_new.write(counter_new, 3, rec_list[2])
-                    worksheet_new.write(counter_new, 4, rec_list[3])
-                    worksheet_new.write(counter_new, 10, list_ann[0])
-                    worksheet_new.write(counter_new, 11, list_ann[1])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 1, code1)
+                    worksheet_CodeMapper.write(counter_CodeMapper, 2, rec_list[1])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 3, rec_list[2])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 4, rec_list[3])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 10, list_ann[0])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 11, list_ann[1])
 
-                    counter_new += 1
+                    counter_CodeMapper += 1
 
-
-                for rec in second_more_new:
+                for rec in second_more_CodeMapper:
                     rec_list = list(rec)
                     # temp_str = rec_list[0] + " " + str(rec_list[1]) + " " + str(rec_list[2]) + "\t" + rec_list[3]
 
                     list_ann = [0, 1]
-                    IAA_matrix_all_new[1, 0] += 1
+                    IAA_matrix_all_CodeMapper[1, 0] += 1
 
-                    if not (rec[0].startswith("SECCION_") or rec[0] in removed_variable):
-                        IAA_matrix_all_new_filtered[1, 0] += 1
-
-                    worksheet_new.write(counter_new, 5, rec_list[0])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 5, rec_list[0])
 
                     if rec_list[0] in self.direct_cat.keys():
                         code2 = self.direct_cat[rec_list[0]]["code"]
                     else:
-                        _,_,code2,_ = self.find_max_similarity_cat(rec_list)
+                        _, _, code2, _ = self.find_max_similarity_cat(rec_list)
 
-                    worksheet_new.write(counter_new, 6, code2)
-                    worksheet_new.write(counter_new, 7, rec_list[1])
-                    worksheet_new.write(counter_new, 8, rec_list[2])
-                    worksheet_new.write(counter_new, 9, rec_list[3])
-                    worksheet_new.write(counter_new, 10, list_ann[0])
-                    worksheet_new.write(counter_new, 11, list_ann[1])
-                    counter_new += 1
-
-
-
-
+                    worksheet_CodeMapper.write(counter_CodeMapper, 6, code2)
+                    worksheet_CodeMapper.write(counter_CodeMapper, 7, rec_list[1])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 8, rec_list[2])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 9, rec_list[3])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 10, list_ann[0])
+                    worksheet_CodeMapper.write(counter_CodeMapper, 11, list_ann[1])
+                    counter_CodeMapper += 1
 
                 for rec in first_more:
                     rec_list = list(rec)
@@ -902,9 +917,6 @@ class Evaluation(object):
 
                     list_ann = [1, 0]
                     IAA_matrix_all[0, 1] += 1
-
-                    if not (rec[0].startswith("SECCION_") or rec[0] in removed_variable):
-                        IAA_matrix_all_filtered[0, 1] += 1
 
                     is_added = self.isEntityAdded(file, list_annotators[0], rec_list)
                     IAA_matrix_changed[0, 1] += is_added
@@ -942,9 +954,6 @@ class Evaluation(object):
                     list_ann = [0, 1]
                     IAA_matrix_all[1, 0] += 1
 
-                    if not (rec[0].startswith("SECCION_") or rec[0] in removed_variable):
-                        IAA_matrix_all_filtered[1, 0] += 1
-
                     is_added = self.isEntityAdded(file, list_annotators[1], rec_list)
                     IAA_matrix_changed[1, 0] += is_added
 
@@ -974,52 +983,68 @@ class Evaluation(object):
                     worksheet_mismatch.write(counter_mistmatch, 5, list_ann[1])
                     counter_mistmatch += 1
 
-            worksheet_just.write(just_row, 0, file)
+            worksheet_details_codemapper.write(just_row, 0, file)
             IAA_matrix_general_all += IAA_matrix_all
             IAA_matrix_general_changed += IAA_matrix_changed
 
             worksheet.write(0, 8, "% All")
             # K = IAA_matrix_all[0][0]
-            denominator =  (IAA_matrix_all[0][0] + IAA_matrix_all[0][1] + IAA_matrix_all[1][0])
+            denominator = (IAA_matrix_all[0][0] + IAA_matrix_all[0][1] + IAA_matrix_all[1][0])
 
             if denominator == 0:
-                K  = "Zero"
+                K = "Zero"
             else:
                 K = IAA_matrix_all[0][0] / denominator
 
+            K_original = K
             worksheet.write(0, 9, K)
 
-            denominator = IAA_matrix_all_filtered[0][0] + IAA_matrix_all_filtered[0][1] + IAA_matrix_all_filtered[1][0]
+            annotators_str = list_annotators[0] + "-" + list_annotators[1]
+            if K != "Zero":
+                if annotators_str not in compare_annotator_IAA.keys():
+                    compare_annotator_IAA[annotators_str] = (K, 1)
+                else:
+                    temp, temp_count = compare_annotator_IAA.get(annotators_str)
+                    compare_annotator_IAA.update({annotators_str: (temp + K, temp_count + 1)})
+
+            # denominator = IAA_matrix_all_filtered[0][0] + IAA_matrix_all_filtered[0][1] + IAA_matrix_all_filtered[1][0]
+            #
+            # if denominator == 0:
+            #     K  = "Zero"
+            # else:
+            #     K = IAA_matrix_all_filtered[0][0] / denominator
+            # K_original = K
+
+            worksheet_CodeMapper.write(0, 12, "% All")
+
+            # K = IAA_matrix_all_CodeMapper[0][0]
+            denominator = (IAA_matrix_all_CodeMapper[0][0] + IAA_matrix_all_CodeMapper[0][1] +
+                           IAA_matrix_all_CodeMapper[1][0])
 
             if denominator == 0:
-                K  = "Zero"
+                K = "Zero"
             else:
-                K = IAA_matrix_all_filtered[0][0] / denominator
-            K_original = K
+                K = IAA_matrix_all_CodeMapper[0][0] / denominator
 
+            K_CodeMapper = K
 
-            worksheet_new.write(0, 12, "% All")
+            if K != "Zero":
+                if annotators_str not in compare_annotator_IAA_codeMapper.keys():
+                    compare_annotator_IAA_codeMapper[annotators_str] = (K, 1)
+                else:
+                    temp, temp_count = compare_annotator_IAA_codeMapper.get(annotators_str)
+                    compare_annotator_IAA_codeMapper.update({annotators_str: (temp + K, temp_count + 1)})
+            worksheet_CodeMapper.write(0, 13, K)
+            worksheet_details_codemapper.write(just_row, 1, K)
 
-            # K = IAA_matrix_all_new[0][0]
-            denominator = (IAA_matrix_all_new[0][0] + IAA_matrix_all_new[0][1] + IAA_matrix_all_new[1][0])
-
-            if denominator == 0:
-                K  = "Zero"
-            else:
-                K = IAA_matrix_all_new[0][0] / denominator
-
-            worksheet_new.write(0, 13, K)
-
-
-
-            denominator = IAA_matrix_all_new_filtered[0][0] + IAA_matrix_all_new_filtered[0][1] + IAA_matrix_all_new_filtered[1][0]
-            if denominator == 0:
-                K  = "Zero"
-            else:
-                K = IAA_matrix_all_new_filtered[0][0] / denominator
-
-            K_new = K
-            worksheet_just.write(just_row, 1, K)
+            # denominator = IAA_matrix_all_CodeMapper_filtered[0][0] + IAA_matrix_all_CodeMapper_filtered[0][1] + IAA_matrix_all_CodeMapper_filtered[1][0]
+            # if denominator == 0:
+            #     K  = "Zero"
+            # else:
+            #     K = IAA_matrix_all_CodeMapper_filtered[0][0] / denominator
+            #
+            # K_CodeMapper = K
+            # worksheet_details_codemapper.write(just_row, 1, K)
 
             worksheet.set_column(10, 10, 20)
 
@@ -1032,30 +1057,36 @@ class Evaluation(object):
                 K = IAA_matrix_changed[0][0] / denominator
 
             worksheet.write(0, 11, K)
-            # worksheet_just.write(just_row, 2, K)
+            # worksheet_details_codemapper.write(just_row, 2, K)
 
-            worksheet_just.write(just_row, 2, K_original)
+            worksheet_details_codemapper.write(just_row, 2, K_original)
 
-            if K_new is "Zero" or K_original is "Zero":
-                worksheet_just.write(just_row, 3, "Zero")
+            if K_CodeMapper is "Zero" or K_original is "Zero":
+                worksheet_details_codemapper.write(just_row, 3, "Zero")
             else:
-                worksheet_just.write(just_row, 3, K_new - K_original)
+                worksheet_details_codemapper.write(just_row, 3, K_CodeMapper - K_original)
 
             just_row += 1
 
             # worksheet.set_column(6, 6, 20)
 
         worksheet_details.write(0, 0, "% All")
-        K = IAA_matrix_general_all[0][0] / (
-                    IAA_matrix_general_all[0][0] + IAA_matrix_general_all[0][1] + IAA_matrix_general_all[1][0])
+        K = IAA_matrix_general_all[0][0]
+        denominator = (IAA_matrix_general_all[0][0] + IAA_matrix_general_all[0][1] + IAA_matrix_general_all[1][0])
+
+        if denominator == 0:
+            K = "No Changed and No Added"
+        else:
+            K = IAA_matrix_general_all[0][0] / denominator
+
         worksheet_details.write(0, 1, K)
 
         worksheet_details.set_column(2, 2, 20)
 
         worksheet_details.write(0, 2, "% Changed and added:")
         denominator = (
-                    IAA_matrix_general_changed[0][0] + IAA_matrix_general_changed[0][1] + IAA_matrix_general_changed[1][
-                0])
+                IAA_matrix_general_changed[0][0] + IAA_matrix_general_changed[0][1] + IAA_matrix_general_changed[1][
+            0])
 
         if denominator == 0:
             K = "No Changed and No Added"
@@ -1063,7 +1094,19 @@ class Evaluation(object):
             K = IAA_matrix_general_changed[0][0] / denominator
 
         worksheet_details.write(0, 3, K)
+
+        for i, (annot, (value, value_count)) in enumerate(compare_annotator_IAA.items()):
+            worksheet_details.write(i + 1, 0, annot)
+            worksheet_details.write(i + 1, 1, value / value_count)
+            worksheet_details.write(i + 1, 2, value_count)
+
         worksheet_details = workbook_details.add_worksheet("Wrong_Variables_Details")
+
+        worksheet_details_codemapper = workbook_details_codemapper.add_worksheet("General_IAA_CodeMapper")
+        for i, (annot, (value, value_count)) in enumerate(compare_annotator_IAA_codeMapper.items()):
+            worksheet_details_codemapper.write(i + 1, 0, annot)
+            worksheet_details_codemapper.write(i + 1, 1, value / value_count)
+            worksheet_details_codemapper.write(i + 1, 2, value_count)
 
         count = 1
         status_agreed = "Agreed"
@@ -1090,7 +1133,7 @@ class Evaluation(object):
                 worksheet_details.write(count, 3, num_status_agreed)
                 worksheet_details.write(count, 4, num_status_not_agreed)
                 score = None if num_status_agreed + num_status_not_agreed == 0 else (
-                            num_status_agreed / (num_status_agreed + num_status_not_agreed))
+                        num_status_agreed / (num_status_agreed + num_status_not_agreed))
                 worksheet_details.write(count, 5, score)
                 count += 1
 
@@ -1125,11 +1168,12 @@ class Evaluation(object):
                         temp[status_agreed] += status[status_agreed] if status.get(status_agreed) is not None else 0
 
                     if temp.get(status_not_agreed) is None:
-                        temp[status_not_agreed] = status[status_not_agreed] if status.get(status_not_agreed) is not None else 0
+                        temp[status_not_agreed] = status[status_not_agreed] if status.get(
+                            status_not_agreed) is not None else 0
                     else:
-                        temp[status_not_agreed] += status[status_not_agreed] if status.get(status_not_agreed) is not None else 0
-                    all_details.update({label:temp})
-
+                        temp[status_not_agreed] += status[status_not_agreed] if status.get(
+                            status_not_agreed) is not None else 0
+                    all_details.update({label: temp})
 
         for (label, status) in all_details.items():
             num_status_agreed = status[status_agreed] if status.get(status_agreed) is not None else 0
@@ -1149,26 +1193,26 @@ class Evaluation(object):
         worksheet_details.write(0, 1, "count_old")  # In each files we count just each variables once
         worksheet_details.set_column(0, 0, 30)
 
-        worksheet_details.write(0, 3, "Labels_code_new")
-        worksheet_details.write(0, 4, "count_new")  # In each files we count just each variables once
+        worksheet_details.write(0, 3, "Labels_code_CodeMapper")
+        worksheet_details.write(0, 4, "count__CodeMapper")  # In each files we count just each variables once
         worksheet_details.set_column(3, 3, 30)
 
         rdered_count_variabe_diagnostic = OrderedDict(sorted(count_variabe_diagnostic.items(), key=lambda t: t[0]))
-        rdered_count_variabe_diagnostic_diag = OrderedDict(sorted(count_variabe_diagnostic_diag.items(), key=lambda t: t[0]))
+        rdered_count_variabe_diagnostic_diag = OrderedDict(
+            sorted(count_variabe_diagnostic_diag.items(), key=lambda t: t[0]))
         for i, (cat, counter_diag) in enumerate(rdered_count_variabe_diagnostic.items()):
-            worksheet_details.write(i+1, 0, cat)
-            worksheet_details.write(i+1, 1, counter_diag)
+            worksheet_details.write(i + 1, 0, cat)
+            worksheet_details.write(i + 1, 1, counter_diag)
 
         for i, (cat, counter_diag) in enumerate(rdered_count_variabe_diagnostic_diag.items()):
             worksheet_details.write(i + 1, 3, cat)
             worksheet_details.write(i + 1, 4, counter_diag)
 
-
         workbook.close()
-        workbook_just.close()
+        workbook_details_codemapper.close()
         workbook_mismatch.close()
         workbook_details.close()
-        workbook_new.close()
+        workbook_CodeMapper.close()
 
     def IAA(self, set_2):
 
@@ -1305,7 +1349,9 @@ class Evaluation(object):
         elif int(self.set.split("_")[0]) == 5:
             header_file = os.path.join(self.parentDir, "../EHR-HeaderDetector/data/headers_17.12.2019_bunch_5.txt")
             varibale_file = os.path.join(variable_dir, "IctusnetDict_28.11.2019_bunch_5.bsv")
-
+        elif int(self.set.split("_")[0]) == 6:
+            header_file = os.path.join(self.parentDir, "../EHR-HeaderDetector/data/headers_11.01.2020_bunch_6.txt")
+            varibale_file = os.path.join(variable_dir, "IctusnetDict_24.01.2020_bunch_6.bsv")
 
         self.headers_dic(header_file)
         self.variable_dic(varibale_file)
@@ -1330,7 +1376,7 @@ class Evaluation(object):
 
             for file in annotators_entities_ant.keys():
 
-                if file.startswith("sonespases_973918779"):
+                if file.startswith("373927169"):
                     check = 0
 
                 ctakes_ents = ctakes_entities_ant.get(file)
@@ -1368,6 +1414,8 @@ class Evaluation(object):
                 removes[file] = remove_ent
 
                 for ann_ent in annotators_ents:
+                    if ann_ent["text"] == "NIHSS 2":
+                        check = 0
                     add = True
                     for cta_ent in ctakes_ents:
                         if cta_ent['start'] == ann_ent['start'] and cta_ent['end'] == ann_ent['end']:
@@ -1560,6 +1608,8 @@ class Evaluation(object):
             for keys, values in sorted(self.new_variables.items()):
                 label_text = keys.split("|", 1)
                 temp_line = " ".join(label_text[1].split())
+                if temp_line == "Enoxaparina":
+                    check = 0
                 if label_text[0].startswith("SECCION_"):
                     if not (temp_line.upper() in self.headers_name_dic.keys()
                             and self.headers_name_dic[temp_line.upper()] == label_text[0]):
@@ -1663,7 +1713,7 @@ class Evaluation(object):
                 no_punct = no_punct + " "
         return no_punct
 
-    def checking_new_section_added(self):
+    def checking_variables_depended_on_text(self):
         nvariables = self.new_variables.keys()
         statical_analysis_dir = os.path.join(all_differences_csv_dir, "statistical", self.set)
 
@@ -1678,6 +1728,11 @@ class Evaluation(object):
             os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_etilogia_variables.csv"), "w")
         check_etilogia_writer = csv.writer(check_etilogia_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
+
+        check_fecha_hora_dependency_csv = open(
+            os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_fecha_hora_dependency.csv"), "w")
+        check_fecha_hora_dependency_writer = csv.writer(check_fecha_hora_dependency_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
         check_fre_etilogia_csv = open(
             os.path.join(statical_analysis_dir, "Set_" + self.set + "-checking_freq_etilogia_variables.csv"), "w")
         check_fre_etilogia_writer = csv.writer(check_fre_etilogia_csv, delimiter='\t', quotechar='"',
@@ -1691,11 +1746,14 @@ class Evaluation(object):
                          "Lacunar", "malformación arteriovenosa", "mecanisme embòlic",
                          "secundaria a malformación vascular", "secundaria a tumor"]
 
+
         etilogia_dict = dict()
+
+
         for dir, files in self.annotators_entities.items():
             for file, records in files.items():
 
-                if file.startswith("sonespases_981875722.ann"):
+                if file.startswith("425536153.utf8"):
                     check = 0
 
                 if file not in self.adds_ann[dir].keys():
@@ -1705,17 +1763,18 @@ class Evaluation(object):
                     file]
                 records = sorted(records_not_order, key=lambda entity: entity['start'])
 
-
                 records_seek = 0
                 begin = 0
                 f_txt = open(os.path.join(annotators_dir, dir, self.set, file.replace(".ann", ".txt")), "r")
                 for line in f_txt:
 
+                    checker_list = []
+
                     if line.startswith("NIHSS 0. [3]"):
                         check = 1
                     line_size = len(line)
 
-                    # Check if Etiligia word and the acceptable variables happens together in one line:
+                    # Check if Etiologia word and the acceptable variables happens together in one line:
                     unaccented_line = unidecode.unidecode(self.remove_punc(line)).lower().split()
                     if "etiologia" in unaccented_line:
                         for etilogial in etilogia_list:
@@ -1740,7 +1799,7 @@ class Evaluation(object):
                                 temp = etilogia_dict[unaccented_etilogial]
                                 temp.update({"with": temp["with"], "notwith": temp["notwith"] + 1})
                                 etilogia_dict.update({unaccented_etilogial: temp})
-                    # Finish checking
+                    # Finish checking Etiologia
 
                     while records_seek < len(records) and records[records_seek]['start'] >= begin and \
                             records[records_seek]['end'] <= begin + line_size:
@@ -1769,29 +1828,20 @@ class Evaluation(object):
                                                                          records[records_seek]['end']
                                     , records[records_seek]['text']])
 
-                        records_seek += 1
-                    # elif records[records_seek]['start'] < begin or records[records_seek]['end'] > begin + line_size:
-                    #     print("STRANGE", dir, file, records[records_seek]['text'])
 
-                    # if line and ((line[0].isalpha() and line[0].isupper()) or not line[0].isalpha()) \
-                    #         and not line.startswith("Nº") and not line.upper().startswith("SIN"):
-                    #     for variable in nvariables:
-                    #         if self.new_variables.get(variable)[0].startswith("SECCION_"):
-                    #             var = self.trim_name(variable).upper()
-                    #             upper_line = line.upper()
-                    #             if upper_line.startswith(var):
-                    #                 check = True
-                    #                 for ann_ent in records:
-                    #                     if not (ann_ent['start'] == begin and ann_ent['label'].startswith(
-                    #                             "SECCION_") and ann_ent["text"].upper().startswith(var)):
-                    #                         check = False
-                    #                     else:
-                    #                         check = True
-                    #                         break
-                    #                 if not check:
-                    #                     check_writer.writerow(
-                    #                         [dir] + [file] + [begin] + [variable.strip()] + [line.strip()])
-                    #                     break
+                        if records[records_seek]['label'] in self.fecha_hora_dependecies.keys() or any(records[records_seek]['label'] == y for x in self.fecha_hora_dependecies.values() for y in x):
+                            checker_list.append(records[records_seek]['label'])
+
+
+
+                        records_seek += 1
+
+                    mistake = self.checking_fecha_hora_dependencies(checker_list)
+                    for mis in mistake:
+                        dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + dir + "/" + \
+                                   self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[
+                                       0].upper() + "_" + file + "\")"
+                        check_fecha_hora_dependency_writer.writerow([dir_file] + [mis] + [line.strip()])
                     begin += line_size
                 f_txt.close()
 
@@ -1802,6 +1852,40 @@ class Evaluation(object):
         check_span_csv.close()
         check_etilogia_csv.close()
         check_fre_etilogia_csv.close()
+        check_fecha_hora_dependency_csv.close()
+
+
+    def checking_fecha_hora_dependencies(self, checker_list):
+        mistakes = []
+        for suspicious in checker_list:
+
+            if suspicious in self.fecha_hora_dependecies.keys():
+                temp_susp = self.fecha_hora_dependecies.get(suspicious)
+                for temp in temp_susp:
+                    if temp in checker_list:
+                        break
+                    else:
+                        if suspicious not in mistakes:
+                            mistakes.append(suspicious)
+            else:
+                full_suspicious_gen = (x for x in self.fecha_hora_dependecies.values() for y in x if suspicious == y)
+                full_suspicious = next(full_suspicious_gen)
+                temp_susp = None
+                for key, value in self.fecha_hora_dependecies.items():
+                    if value == full_suspicious:
+                        temp_susp = key
+                        break
+                if temp_susp is not None and temp_susp not in checker_list:
+                    mistakes.append(suspicious)
+                elif temp_susp is None:
+                    print(suspicious)
+        return mistakes
+
+
+
+
+
+
 
     def save_acceptance_rate(self):
         ordered_acceptance_rate = OrderedDict(sorted(self.acceptance_rate.items(), key=lambda t: t[0]))
@@ -1879,7 +1963,8 @@ class Evaluation(object):
         workbook_suspections_label = xlsxwriter.Workbook(xlsx_suspections_label)
         sheets = {}
         sheets_counter = {}
-        suspections_label = ["Localizacion", "Lateralizacion", "Arteria_afectada", "Fecha_TAC_inicial", "Fecha_llegada_hospital"]
+        suspections_label = ["Localizacion", "Lateralizacion", "Arteria_afectada", "Fecha_TAC_inicial",
+                             "Fecha_llegada_hospital"]
         row_keeper_label = np.zeros((1, len(suspections_label)))
 
         for file, annotators in self.shared_ann_files_dic.items():
@@ -1894,13 +1979,16 @@ class Evaluation(object):
                 listA = annotators[list_annotators[0]]
                 listB = annotators[list_annotators[1]]
 
+                intersection = [i for i in listA for j in listB if
+                                i['start'] == j['start'] and
+                                i['end'] == j['end'] and
+                                i['label'] == j['label'] and
+                                i['text'] == j['text']]
 
-                intersection = [i for i in listA for j in listB if i['start'] == j['start'] and i['end'] == j['end'] and i['label'] == j['label'] and i['text'] == j['text']]
+
 
                 second_more = list(itertools.filterfalse(lambda x: x in listA, listB))
                 first_more = list(itertools.filterfalse(lambda x: x in listB, listA))
-
-
 
                 # annotators = self.shared_ann_files.get(files)
                 # i  = set(annotators[list_annotators[0]]).intersection(
@@ -1912,7 +2000,8 @@ class Evaluation(object):
 
                 records_seek = 0
                 begin = 0
-                file_ = os.path.join(annotators_dir, list_annotators[0], self.set.split("-with-")[0], file.replace(".ann", ".txt"))
+                file_ = os.path.join(annotators_dir, list_annotators[0], self.set.split("-with-")[0],
+                                     file.replace(".ann", ".txt"))
                 if os.path.isfile(file_):
                     f_txt = open(file_, "r")
                 else:
@@ -1928,12 +2017,12 @@ class Evaluation(object):
                     while records_seek < len(records) and records[records_seek]['start'] >= begin and \
                             records[records_seek]['end'] <= begin + line_size:
                         if records[records_seek]['label'] in suspections_label:
-                        # is_correct = self.call_span_checker_accepted(begin, line, records[records_seek])
+                            # is_correct = self.call_span_checker_accepted(begin, line, records[records_seek])
                             if records[records_seek]['label'] not in sheets.keys():
-                                sheets[records[records_seek]['label']] = workbook_suspections_label.add_worksheet(records[records_seek]['label'])
+                                sheets[records[records_seek]['label']] = workbook_suspections_label.add_worksheet(
+                                    records[records_seek]['label'])
                                 sheets_counter[records[records_seek]['label']] = 1
                             ws = sheets[records[records_seek]['label']]
-
 
                             ws.set_column(0, 0, 27)
                             ws.set_column(1, 3, 12)
@@ -1947,13 +2036,13 @@ class Evaluation(object):
                             ws.write(0, 4, "Text")
                             ws.write(0, 5, "Line")
 
-
-
                             counter = sheets_counter[records[records_seek]['label']]
 
-                            ws.write_url(counter, 0, 'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/." +
-                                    self.set.split("_")[0] + '/#/' + list_annotators[1] + "/." + self.set.split("_")[0]
-                                    + "/" + file.replace(".ann", ""), string = file)
+                            ws.write_url(counter, 0,
+                                         'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/." +
+                                         self.set.split("_")[0] + '/#/' + list_annotators[1] + "/." +
+                                         self.set.split("_")[0]
+                                         + "/" + file.replace(".ann", ""), string=file)
                             # ws.write(counter, 0, file)
                             # ws.write_url(counter, 1,
                             #              'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + list_annotators[0] +
@@ -1972,22 +2061,21 @@ class Evaluation(object):
                             ws.write(counter, 3, "Agreed", cell_format)
                             ws.write(counter, 4, records[records_seek]['text'])
                             ws.write(counter, 5, line.strip())
-                            sheets_counter.update({records[records_seek]['label']: counter+1})
+                            sheets_counter.update({records[records_seek]['label']: counter + 1})
                         # else:
                         #     records_seek +=1
                         # if not is_correct and not (records[records_seek]['label'].startswith("Fecha_") or
                         #                            records[records_seek]['label'].startswith("Hora_") or
                         #                            records[records_seek]['label'].startswith("Tiempo_")):
-                            # dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + dir + "/" + \
-                            #            self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[
-                            #                0].upper() + "_" + file + "\")"
+                        # dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + dir + "/" + \
+                        #            self.set.split("_")[0] + "/" + file.replace(".ann", "") + "\";\"" + dir[
+                        #                0].upper() + "_" + file + "\")"
 
                         records_seek += 1
                     begin += line_size
                 f_txt.close()
 
-
-                #---------------------------------
+                # ---------------------------------
 
                 records = sorted(first_more, key=lambda entity: entity['start'])
                 second_more_ordered = sorted(second_more, key=lambda entity: entity['start'])
@@ -1997,7 +2085,8 @@ class Evaluation(object):
                 # f_txt = open(os.path.join(annotators_dir, list_annotators[0], self.set.split("-with-")[0], file.replace(".ann", ".txt")),
                 #              "r")
 
-                file_ = os.path.join(annotators_dir, list_annotators[0], self.set.split("-with-")[0], file.replace(".ann", ".txt"))
+                file_ = os.path.join(annotators_dir, list_annotators[0], self.set.split("-with-")[0],
+                                     file.replace(".ann", ".txt"))
                 if os.path.isfile(file_):
                     f_txt = open(file_, "r")
                 else:
@@ -2008,7 +2097,7 @@ class Evaluation(object):
                 for line in f_txt:
                     line_size = len(line)
                     if begin >= 3000:
-                        checl = 9
+                        check = 9
 
                     while records_seek < len(records) and records[records_seek]['start'] >= begin and \
                             records[records_seek]['end'] <= begin + line_size:
@@ -2030,9 +2119,11 @@ class Evaluation(object):
                             ws.set_column(5, 5, 200)
                             counter = sheets_counter[records[records_seek]['label']]
                             # ws.write(counter, 0, file)
-                            ws.write_url(counter, 0, 'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/." +
-                                    self.set.split("_")[0] + '/#/' + list_annotators[1] + "/." + self.set.split("_")[0]
-                                    + "/" + file.replace(".ann", ""), string = file)
+                            ws.write_url(counter, 0,
+                                         'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/." +
+                                         self.set.split("_")[0] + '/#/' + list_annotators[1] + "/." +
+                                         self.set.split("_")[0]
+                                         + "/" + file.replace(".ann", ""), string=file)
                             ws.write(counter, 1, list_annotators[0])
                             # ws.write_url(counter, 1,
                             #                 'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + list_annotators[0] +
@@ -2055,7 +2146,7 @@ class Evaluation(object):
                         records_seek += 1
                     begin += line_size
                 f_txt.close()
-                #---------------------------------
+                # ---------------------------------
 
                 # ---------------------------------
 
@@ -2066,14 +2157,14 @@ class Evaluation(object):
                 # f_txt = open(os.path.join(annotators_dir, list_annotators[1], self.set.split("-with-")[1], file.replace(".ann", ".txt")),
                 #              "r")
                 #
-                file_ = os.path.join(annotators_dir, list_annotators[1], self.set.split("-with-")[0], file.replace(".ann", ".txt"))
+                file_ = os.path.join(annotators_dir, list_annotators[1], self.set.split("-with-")[0],
+                                     file.replace(".ann", ".txt"))
                 if os.path.isfile(file_):
                     f_txt = open(file_, "r")
                 else:
                     file_ = os.path.join(annotators_dir, list_annotators[1], self.set.split("-with-")[1],
                                          file.replace(".ann", ".txt"))
                     f_txt = open(file_, "r")
-
 
                 for line in f_txt:
                     line_size = len(line)
@@ -2099,15 +2190,17 @@ class Evaluation(object):
                             ws.set_column(4, 4, 17)
                             ws.set_column(5, 5, 200)
                             counter = sheets_counter[records[records_seek]['label']]
-                            ws.write_url(counter, 0, 'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/." +
-                                    self.set.split("_")[0] + '/#/' + list_annotators[1] + "/." + self.set.split("_")[0]
-                                    + "/" + file.replace(".ann", ""), string = file)
+                            ws.write_url(counter, 0,
+                                         'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/." +
+                                         self.set.split("_")[0] + '/#/' + list_annotators[1] + "/." +
+                                         self.set.split("_")[0]
+                                         + "/" + file.replace(".ann", ""), string=file)
                             # ws.write(counter, 0, file)
                             ws.write(counter, 1, "Not by " + list_annotators[0])
                             # ws.write_url(counter, 1,
                             #                 'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + list_annotators[1] +
                             #                 '/' + self.set.split("_")[0] + '/' + file.replace(".ann", "") , string=list_annotators[1].upper())
-                            ws.write(counter, 2,  list_annotators[1])
+                            ws.write(counter, 2, list_annotators[1])
                             cell_format = workbook_suspections_label.add_format({'bold': True, 'font_color': 'red'})
                             ws.write(counter, 3, "Not_Agreed", cell_format)
                             ws.write(counter, 4, records[records_seek]['text'])
@@ -2128,13 +2221,9 @@ class Evaluation(object):
                 # ---------------------------------
         workbook_suspections_label.close()
 
-
-
-
-                    # for i, annot in enumerate(list_annotators):
-                    #     worksheet.write(0, i + 4, annot)
-                    #     worksheet_mismatch.write(0, i + 4, annot)
-
+        # for i, annot in enumerate(list_annotators):
+        #     worksheet.write(0, i + 4, annot)
+        #     worksheet_mismatch.write(0, i + 4, annot)
 
 
 if __name__ == "__main__":
@@ -2159,7 +2248,7 @@ if __name__ == "__main__":
     evalu.save_analysis()
     evalu.save_new_variables_sections()
 
-    evalu.checking_new_section_added()
+    evalu.checking_variables_depended_on_text()
 
     evalu.NIHH_ASPECT_RANKIN_Finder()
 
