@@ -1,11 +1,10 @@
 import argparse
 import csv
-import json
 import os
 import xlsxwriter
 from collections import OrderedDict
-from Script import compareAnnotations
-from Script.utility import reading_duplicated_files
+from src.annotators import compare_annotations
+from src.core.util import reading_duplicated_files
 
 fileDir = os.path.dirname(os.path.abspath(__file__))
 parentDir = os.path.dirname(fileDir)
@@ -24,7 +23,7 @@ annotators_dic = dict()
 
 
 
-def reading_hopitals_files(Set):
+def reading_hopitals_files():
     # loaded = os.path.join(data_dir, "Codigos_Hospitales-" + Set + ".csv")
     loaded = os.path.join(data_dir, "relacio_codis_textmining_BSC.csv")
     with open(loaded) as csv_file:
@@ -110,9 +109,13 @@ def prepare_comparative(annotations, duplicated_list):
 def save_comparative_marato(comparative_dic, Set):
     data_dir = os.path.join(parentDir, "Annotated/analysis/statistical", Set)
     xlsx_file = os.path.join(data_dir, "Set_" + Set+ "_Comparativa_Hospitals.xlsx")
+    xlsx_absent_file = os.path.join(data_dir, "Set_" + Set+ "_Absent_seccion_hospitals.xlsx")
+
 
     workbook = xlsxwriter.Workbook(xlsx_file)
-    for codigos, files in comparative_dic.items():
+    workbook_absent = xlsxwriter.Workbook(xlsx_absent_file)
+    worksheet_absent = workbook_absent.add_worksheet("Sheet")
+    for i, (codigos, files) in enumerate(comparative_dic.items()):
         worksheet = workbook.add_worksheet(codigos)
         worksheet.set_column(0, 0, 36)
         worksheet.freeze_panes(1, 0)
@@ -125,14 +128,18 @@ def save_comparative_marato(comparative_dic, Set):
         variables_list.sort()
         fecha_hora_tiempo_list.sort()
 
+        number_files = len(sorted_files)
+        sum_headers = 0
+        last_col_headers = 0
         for col, (file, entities) in enumerate(sorted_files.items()):
+
             cell_format = workbook.add_format({'bold': False})
             suffix = ""
             if not file.startswith("son"):
                 suffix =  ".utf8"
-            worksheet.write_url(0, col+1, 'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + annotators_dic.get(file[-1]) +
-                                '/' + Set.split("_",1)[0] + '/' + file[0:-2] + suffix , string=file.upper())
-            # worksheet.write(0, col+1, file.upper(), cell_format)
+            # worksheet.write_url(0, col+1, 'http://temu.bsc.es/ICTUSnet/index.xhtml#/' + annotators_dic.get(file[-1]) +
+            #                     '/' + Set.split("_",1)[0] + '/' + file[0:-2] + suffix , string=file.upper())
+            worksheet.write(0, col+1, file.upper(), cell_format)
             counter = 1
             sum_c = 0
             for variable in section_list:
@@ -144,6 +151,7 @@ def save_comparative_marato(comparative_dic, Set):
                 else:
                     worksheet.write(counter, col + 1, "")
                 counter += 1
+
 
             skip_rows.append(counter-1)
             counter += 1
@@ -172,26 +180,43 @@ def save_comparative_marato(comparative_dic, Set):
 
             worksheet.write(counter+2, col+1, sum_c)
 
-            last_col = col
 
+
+            last_col = col
+            last_col_headers = counter
+
+            sum_headers += sum_c
+        worksheet.write( last_col_headers, 0, sum_headers/number_files)
+
+        zero_rows = []
         for counter in range(len(sum_r)):
             if counter not in skip_rows:
+                if sum_r[counter] == 0:
+                    zero_rows.append(section_list[counter].replace("SECCION_", ""))
                 worksheet.write(counter+1, last_col + 3, sum_r[counter])
+
+        print(len(section_list))
+        worksheet_absent.write(i, 0, codigos)
+        worksheet_absent.write(i, 1, len(zero_rows))
+        for col, rows in enumerate(zero_rows):
+            worksheet_absent.write(i, col+2, rows)
 
         worksheet.set_column(1, last_col+1, 11.5)
     workbook.close()
+    workbook_absent.close()
+
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="comparing")
 
-    parser.add_argument('--set', help='Which set is going to compare')
+    parser.add_argument('--set', help='Which set is going to src')
 
     args = parser.parse_args()
     duplicated_list = reading_duplicated_files(args.set, data_dir)
-    reading_hopitals_files(args.set)
+    reading_hopitals_files()
 
-    evalu = compareAnnotations.Evaluation()
+    evalu = compare_annotations.Comparison()
     evalu.init_paths(args.set)
     evalu.annators_name()
 
