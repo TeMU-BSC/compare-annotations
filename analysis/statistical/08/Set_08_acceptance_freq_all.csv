@@ -1,0 +1,22 @@
+		Accepted	Not Accepted
+acenocumarol	Tratamiento_anticoagulante	4	8
+aci	Arteria_afectada	0	2
+acm	Arteria_afectada	1	2
+adiro	Tratamiento_antiagregante	0	1
+angiotac	TAC_craneal	0	1
+cardioembolico	Etiologia	1	1
+fibrinolisis sistemica	Trombolisis_intravenosa	1	0
+fibrinolitico	Trombolisis_intravenosa	0	1
+heparina	Tratamiento_anticoagulante	0	1
+hipertensio	Etiologia	0	1
+ictus isquemicos	Ictus_isquemico	0	1
+ictus minor	Ataque_isquemico_transitorio	1	1
+ictus	Ictus_isquemico	0	2
+izquierda	Lateralizacion	1	8
+rivaroxaban	Tratamiento_anticoagulante	3	6
+rtpa	Trombolisis_intravenosa	3	0
+sintrom	Tratamiento_anticoagulante	2	4
+tac	TAC_craneal	1	0
+tc craneal	TAC_craneal	6	8
+tc	TAC_craneal	4	6
+tratamiento fibrinolitico	Trombolisis_intravenosa	2	1

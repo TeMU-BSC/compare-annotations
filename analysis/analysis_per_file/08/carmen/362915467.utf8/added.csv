@@ -1,0 +1,4 @@
+row	text	start	end	label
+T69	21: 20	9089	9095	Hora_TAC
+T47	21: 35h	9467	9474	Hora_primer_bolus_trombolisis_rtPA
+T52	Alteplase 45mg; 4.5 en bolo y 40.5mg en perfusión durante 60 minutos; hora bolus 21: 35h	9528	9616	Hora_primer_bolus_trombolisis_rtPA

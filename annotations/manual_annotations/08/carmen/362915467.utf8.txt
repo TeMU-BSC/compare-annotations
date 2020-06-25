@@ -1,0 +1,165 @@
+_LOCATION_ Tel. _CONTACT_
+e-mail: _CONTACT_
+Nº Història Clínica: _ID_
+Cognoms, Nom: _NAME_
+NºEpisodi: _ID_
+CIP: _ID_
+Sexe: Dona
+Data de Naixement: _DATE_   Edat: 89 Anys
+NIF/DNI: _ID__NAME_,; _NAME_,
+_NAME_
+Informe d'alta d'hospitalització
+17:45:26
+21.04.2017
+_LOCATION_
+_SS_ NEUROLOGIA
+CP
+ABS
+Servei Data d'alta
+_LOCATION_
+_CONTACT_
+DOMICIL/RES.SOC 14.04.2017
+Adreça
+Telèfon Procedència Data d'ingrés Atès per
+
+
+
+MOTIU D'INGRÉS
+Alteración del lenguaje
+
+ANTECEDENTS
+ANTECEDENTES PERSONALES:
+Mujer de 89 años. Sin alergias medicamentosas conocidas. No hábitos tóxicos.
+Situación funcional previa: parcialmente dependiente para las actividades básicas de la vida diaria por deterioro cognitivo leve, hipoacusia severa portadora de audífono, disminución de la agudeza visual. mRS 2.
+
+ANTECEDNETES PATOLÓGICOS:
+-	Hipertensión arterial de más de 10 años de evolución en tratamiento médico y seguimiento por médico de familia
+-	Hipotiroidismo en tratamiento sustitutivo con levotiroxina, realiza controles analíticos en CAP. Buenos controles
+-	Degeneración macular bilateral con pérdida de agudeza visual bilateral
+-	Hipoacussia grave bilateral, portadora de audífonos
+-	Colecistectomía hace varios años sin alteraciones
+-	Nefropatia parenquimatosa de predominio derecho: Se ha realizado ecofrafía abdominal Riñones de situación normal, se objetiva cortical disminuida en riñón derecho y presencia de quiste polar inferior de 27mm. Sospecha de tabicación compatible con duplicidad de sistema renal izquierdo. Vejiga sin alteraciones.
+-	Infecciones de orina de repetición.
+-	Incontinencia Urinaria
+-	Epuisodio de Panceratitis aguda en Octubre del 2011 a raíz de dolor abdominal , por el cuál estuvo ingresado durante 7 días, con buena evolución.
+-	Síndrome de Colon irritable en seguimiento por médico de cabecera
+-	Glaucoma en tratameinto médico con tratamiento tópico, en seguimiento sucesivo en oftalmología
+
+
+
+MEDICACIÓ HABITUAL
+Eutirox 75 mcgs c/ 24 horas, hidroferol 0.266 mgs c/ 15 días, lisinopril 20 mg c/ 24 horas, timolol oftálimico c/ 24 horas
+
+PROCÉS ACTUAL
+El día 04/14/17 a las 18.15h habla por última vez de forma normal con su hija. Sobre las 19: 30h detecta alteración del lenguaje, con dificultad para emitir palabras y lenguaje incomprensible. Consultan al _SS_ a las 20h00 desde donde activan el código ictus vía SEM a las 20: 43h (escala RACE 2). Llega a urgencias de nuestro centro a las 21: 10h.
+
+EXPLORACIÓ FÍSICA FR     rpm	TA s    126 mmHg	TA d   73 mmHg
+
+Informe d'alta d'hospitalització
+
+
+
+FC   57 bpm
+Tªaxi 36.7 ºC	Tªrec  ºC	SAT O2 98 %	Pes Kg Glicèmia capilar 112mg/dL.
+Exploración neurológica inicial 14/04/2017: paciente vigil, afasia global de predominio motor, compran órdenes
+sencillas, se intoxica con las complejas, emite algunas palabras con presencia de parafasia y dificultades para la repetición. Disartría leve. No alteraciones oculomotores. Posible hemianopsia homónima derecha en la campimetría por confrontación. Leve paresia facial central derecha. No alteraciones de la fuerza de extremidades. Sensibilidad no valorable. No dismetrías. Reflejos cutáneo-plantares flexores bilateralmente.
+NIHSS (0.1.0)0.2/1(0.0)(0.0)0.1.0.3.2 .0=10
+
+Exploración físia post rTPA: Orientada en persona no en espacio, algunas dificultades para la nominación y parafasia, repite correctamente, evocación categorial conservada, comprensión normal. Disartria leve. No alteraciones campimètriques. No alteraciones de la oculomotricitat. No alteraciones del resto de pares craneales. Fuerza y sensibilidad normales. no dismetrías
+NIHSS (0.0.0)0.0/0(0.0)(0.0)0.0.1.1.0 =2
+
+Exploración 24 horas 16/04/2017:  Paciente con hipoacusia importantes, conciente, orientada en tiempo , espacio y persona, realiza alguna parafasia puntual, nomina y repite sin alteraciones, evocación categorial 5/5, no alteraciones campimétricas exploradas por conforntación, no alteraciones de la oculomotricidad intrínseca ni extrínseca,leve asimetría facial que corrige tras la contracción, no déficit motor ni sensitivo. RCP : flexor bilateral.
+NIHSS: 0
+
+Exploración sistémica:
+AC: Ruídios cardíacos regulares, soplo sistólico en foco aórtico con irradiación panfocal y a carótidas bilaeral, no roces no extratonos
+AP: MV prensente, no ruídos sobreañadidos
+Abdomen: Blando depresible no doloroso a la palpación Extremidades: Simétricas, pulsos pedios, no signos de TVP
+
+
+EXPLORACIÓ COMPLEMENTÀRIA
+Analítica urgent 14/04/2017:
+Hemograma: 6.600 leucocitos (N: 48.2%, L: 39.1%, M: 11.3%) Hto: 38.3 % , Hb: 12.6 g/dl, plaquetas: 160.000
+Coagulación: TP: 100%, TTPA: 37.2 seg, Fibrinógeno: 409 mg/dl Equilibrio venoso: pH: 7.38, pCO2: 54 mmHg, pO2: 39 mmHg
+Bioquímica: Glucosa: 96 mg/dl, Urea: 30.7 mg/dl, Cr: 0.59 mg/dl, Cl: 98.2 mmol7L, Na: 133, K: 4.4 mmol/L,
+Bilirrubina: 0.36, ALT: 11 U/L, CCK: 84 U/L
+
+Analítica de ingreso 18/04/2017:
+Bioquímica: HbA1c: 5.5%, proteíans: 61.1 g/L, GGT: 10 U/L, Trigliceridos: 154 mg/dl, Colesterol 180 mg/dl, HDL:
+55.2 mg/dl, LDL: 94 mg/dl , proteinograma : pendiente , TSH: 4.570 uUi/mL, TSH: 4.570. T3: 0.73
+
+
+ECG 14/04/2017: ritmo sinusal a 80bpm, PR normal, QRS estrecho, sin alteraciones agudas de la repolarización.
+
+TC craneal y angioTC craneal urgente 14/04/2017: No se observan signos TC sugestivos de isquemia aguda.
+
+Informe d'alta d'hospitalització
+
+
+
+
+ASPECTS 10 Infartos isquémicos lacunares crónicos de ganglios basales bilaterales. Leve hipoatenuación de la sustancia blanca periventricular y subcortical bilateral simétrica y  difusa  compatible con desmielinización de características inespecíficas de probable causa isquémica crónica. Discreta prominencia de surcos de la convexidad infra y supratentoriales de forma proporcionada al tamaño del sistema ventricular compatible con atrofia cerebral difusa. Cisternas basales y perimesencefálicas libres. Línea media centrada. No se aprecian alteraciones óseas TC valorables
+Sin otras alteraciones parenquimatosas ni extraaxiales TC valorables.
+
+Rx tórax 14/04/2017: No se observan condensaciones ni masas a parénquima pulmonar; senos costofrénicos libres; mediastino sin alteraciones
+
+Ecocardiograma 18/04/2017: Ventrículo izquierdo de pequeño diámetro con moderada hipertrofia del septum basal (septum basal sigmoideo) normocontráctil. Aurícula izquierda ligera-moderadamente dilatada. Calcificación del anillo mitral posterior. Ligera insuficiencia mitral. Raíz aórtica ligera-moderadamente dilatada. Aorta ascendente moderadamente dilatada. Cayado aórtico no visualizada.Válvula aórtica trivalva degenerativa. Ligera estenosis aórtica
+
+Estudio de TSA (19/04/17): Se insona Arteria común derecha con presencia de placas deateroma de características hiperecogénicas sin alteracionde de flujo ni patrones de oclusión, se insona ACE sin alteraciones de flujo ni patrones de oclusión. Se insona ACI derecha con con un flujo entre 40-60 cm/seg. Se insona A carótida común izquierda sin presencia de placas de ateroma, se insona ACE sin alteraciones de flujo ni patrones de oclusión. Se insona ACI con evidnecia de imagen isoecoica que produce flujo turbulento con flujo amortiguado 20 cm/seg en comparación con contralateral. Se insona ambas areteiras vertebrales sin alteraciones de flujo ni patrones de oclusión, se sigue en todo su recorrido hasta ostium.
+Conclusión Posible estenosis vs trombo flotante a nivel de ACI izquierda.
+
+RM Cerebral 21/04/2017: Leucoaraiosis parcialmente confluente. Múltiples microsangrados crónicos de probable origen HTA. Infartos lacunares crónicos en territorio perforante. Pequeña lesión isquémica crónica en corona radiata izquierda
+
+
+AngioRM cerebral 21/04/2017: El estudio angiográfico en polígono de Willis no muestra estenosis proximales significativas. Marcada tortuosidad y redundancia de las arterias vertebrales, ambas patentes ysimétricas y de calibre conservado. Sector carotídeo derecho: Carótida común de aspecto ligeramente ectásico y curso redundante. Elongación de carótida interna y externa, ambas patentes y sin evidencia de estenosis significativas.Sector carotídeo izquierdo: Carótida común de aspecto ligeramente ectásico y curso redundante. Elongación de carótida interna y externa, ambas patentes y sin evidencia de estenosis significativas. En relación con la información clínica no se identifican defectos de repleción en el interior del segmento cervical de la ACI izquierda que sugieran la presencia de trombo flotante.
+
+EVOLUCIÓ CLÍNICA
+Mujer de 89 años, Rankin 2, hipertensa y hipotiroida sin otros antecedentes destacables que presenta clínica de tres horas de evolución de alteración del lenguaje.
+
+Informe d'alta d'hospitalització
+
+
+
+
+
+A su llegada a urgencias (21: 10h) presenta hipertensión arterial, con el resto de constantes normales. El ECG está en ritmo sinusal. En la exploración destaca afasia moderada y posible trastorno campimétrica derecho (hemianopsia homónima derecha por reflejo de amenaza) sin alteraciones de la fuerza asociada (NIHSS 10). Se orienta como ictus de territorio de ACM izquierdo (PACI izquierdo) por lo que se realiza analítica general que no muestra alteraciones destacables y TC craneal urgente (21: 20h) que muestra lesiones crónicas bilaterales en ganglios basales y centro semioval izquierdo, sin lesiones isquémicas o hemorrágicas agudas; destaca presencia de moderada calcificación de principales arterias intracraneales (ASPECTS 10).
+
+Dada la presencia de clínica cortical se realiza angioTC (21: 30h) que no muestra defectos de replección a nivel intracraneal. A las 21: 35h se inicia el tratamiento con fibrinolisis sistémica (Alteplase 45mg; 4.5 en bolo y 40.5mg en perfusión durante 60 minutos; hora bolus 21: 35h, NIHSS pre-bolus 10). Tras el inicio de la perfusión de rTPA
+la paciente presenta mejoría sintomática a expensas de mejoría de la fluencia verbal y la nominación (NIHSS 5). Al inicio del tratamiento fibrinolítico administran 10mg de labetalol por hipertensión arterial. Durante el resto de la perfusión la paciente se mantiene estable hemodinámicamente y persiste la recuperación clínica. Se decide ingreso en la Unidad de Ictus para monitorización neurológica, hemodinámica y metabólica y completar el estudio etiológico del ictus.
+
+Durante el ingreso en Unidad de Ictus paciente desde el punto de vista clínico permanece asintomática NIHSS 0, con tendencia a la hipertensión por lo que se inicia hipotensores habituales. Se realiza TAC de control post rTPA que no objetiva lesión por lo que se inicia antiagregación, estatinas y heparina profiláctica para tromosis venosa profunda. En telemetría no se objetivan arritmias embolígenas. Se inicia sedestación en cama con buena tolerancia, dieta oral bien tolerada.
+
+Dentro del estudio etiológico se revisa imágenes de AngioTAC se objetiva bucle a nivel carotídeo izquierdo con imagen sugestiva de trombo, por este motivo completamos estudio con dúplex de TSA que pone de manifiesto un flujo amortiguado en ACI izquierda e imagen sugestiva con trombo. Por este motivo se decide completar estudio con RM cerebral y Angio RM que objetiva leucoaraiosis parcialmente confluente. Múltiples microsangrados crónicos de probable origen HTA. Infartos lacunares crónicos en territorio perforante. Pequeña lesión isquémica crónica en corona radiata izquierda. No se aprecian estenosis intra ni extracraneales significativas. No se evidencia trombo flotante en ACI izquierda.
+
+Ecocardiograma que objetiva aurícula izquierda ligera-moderadamente dilatada, con calcificación del anillo mitral posterior, ligera insuficiencia mitral. raíz aórtica ligera-moderadamente dilatada. Aorta ascendente moderadamente dilatada, ligera estenosis aórtica.
+
+Durante su ingreso en planta de neurología paciente se mantiene asintomática NIHSS 0, tolera adecuadamente tolerancia oral y demabulación sin incidencias.
+
+Dada la estabilidad clínica se decide alta a domicilio y control en consultas externas de Neurología.
+
+DIAGNÒSTICS
+401.9 Hipertensió essencial inespecificada
+436/5 Ictus isquémicos de territorio de ACM izquierda
+
+Informe d'alta d'hospitalització
+
+
+
+TRACTAMENT I RECOMANACIONS A L'ALTA
+Adiro 300 mg c/ 24 horas
+Atorvastatina 40 mg c/ 24  horas
+Eutirox 75 mcgs c/ 24 horas
+Hidroferol 0.266 mgs c/ 15 días
+Lisinopril 20 mg c/ 24 horas Timolol oftálimico c/ 24 horas
+
+CONTROL
+- Control y seguimiento en Consultas externas de neurología , se avisará vía telefónicamente
+
+
+DESTINACIÓ A L'ALTA:	A DOMICILI
+
+
+Validat per: _NAME_	Col·legiat: _ID_
+
+21.04.2017
+Pàgina 1 de 5

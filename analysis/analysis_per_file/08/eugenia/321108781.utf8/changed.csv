@@ -1,0 +1,7 @@
+Annotated	cTAKES	text	start	end	label	old_label
+T0	T0	16:00	248	253	Hora_de_alta	HORA
+T1	T1	10.01.2017	257	267	Fecha_de_alta	FECHA
+T2	T2	03.01.2017	375	385	Fecha_de_ingreso	FECHA
+T22	T22	02/01/2016	3355	3365	Fecha_inicio_sintomas	FECHA
+T23	T23	23:00	3372	3377	Hora_inicio_sintomas	HORA
+T26	T26	01:58	3615	3620	Hora_llegada_hospital	HORA

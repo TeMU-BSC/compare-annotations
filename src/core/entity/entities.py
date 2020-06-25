@@ -68,16 +68,25 @@ class Entities:
             ctakes_entities = {}
             for ctakes_files in os.listdir(os.path.join(ctakes_dir, bunch_prefix, dir)):
                 if ctakes_files.endswith(".ann"):
+                    first_main_variables = []
                     with open(os.path.join(ctakes_dir, bunch_prefix, dir, ctakes_files), "r") as r:
                         entites = []
                         for line in r:
                             temp_line = line.strip().split("\t", 2)
-                            if not line.startswith("#"):
-
+                            if line.startswith("T"):
                                 checking_text = temp_line[-1].replace("\n", "")
                                 checking_start = int(temp_line[1].split()[1])
                                 checking_end = int(temp_line[1].split()[2])
                                 checking_label = temp_line[1].split()[0]
+
+                                # THIS FILTER HAS BEEN ADDED TO BRATMERGER
+                                # if checking_label in const.REQUIRED_SECOND_VARIABLES_FIRST :
+                                #     if checking_label.split("_SUG_")[-1] in first_main_variables:
+                                #         continue
+                                #         # first_main_variables.append(record["label"].split("_SUG_")[-1])
+                                #     else:
+                                #         first_main_variables.append(checking_label.split("_SUG_")[-1])
+
                                 if bunch.startswith("04") or bunch.startswith("03") or bunch.startswith(
                                         "02") or bunch.startswith("01"):
                                     checking_text, checking_start, checking_end = \
@@ -169,7 +178,7 @@ class Entities:
                                 if freq is not None:
                                     freq.update_notacceptance_freq(entity['text'], entity['label'])
                             elif full_line.startswith("#"):
-                                all_hash.append(full_line)
+                                s.append(full_line)
                         for hash in all_hash:
                             row = hash.strip().split("\t", 2)[1].split(" ")[1]
                             if row in keephash:

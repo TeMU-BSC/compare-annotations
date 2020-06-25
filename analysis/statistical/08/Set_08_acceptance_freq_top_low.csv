@@ -1,0 +1,7 @@
+		Accepted	Not Accepted	Rate Acceptance
+acenocumarol	Tratamiento_anticoagulante	4	8	0.33
+izquierda	Lateralizacion	1	8	0.11
+rivaroxaban	Tratamiento_anticoagulante	3	6	0.33
+sintrom	Tratamiento_anticoagulante	2	4	0.33
+tc craneal	TAC_craneal	6	8	0.43
+tc	TAC_craneal	4	6	0.40

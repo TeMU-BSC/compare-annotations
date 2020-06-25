@@ -1,0 +1,249 @@
+_LOCATION_ Tel. _CONTACT_ 
+_CONTACT_ 
+Nº Història Clínica : _ID_ 
+Cognoms , Nom : _NAME_
+NºEpisodi : _ID_ 
+CIP : _ID_ 
+Sexe : Home 
+Data de Naixement : _DATE_ Edat : 83 Anys 
+NIF / DNI : _ID__NAME_; _NAME_; _NAME_; 
+_NAME_; _NAME_
+Informe d'alta d'hospitalització 
+16:00 :00 
+10.01.2017 
+_LOCATION_ 
+_LOCATION_ NEUROLOGIA 
+CP 
+ABS 
+Servei Data d'alta 
+_LOCATION_ 
+_CONTACT_ ; _CONTACT_ 
+DOMICIL / RES 
+SOC 03.01.2017 
+Adreça 
+Telèfon Procedència Data d'ingrés Atès per 
+MOTIU D'INGRÉS 
+Trastorno de lenguaje 
+ANTECEDENTS 
+Paciente varón de 83 años , no alergias medicamentosas conocidas , no hábitos tóxicos 
+Vive con su esposa , independiente para ABVD , mRs 0 
+ANTECEDENTES PATOLÓGICOS : 
+- Hipertensión arterial en tratamiento farmacológico y en seguimiento por su médico de família 
+- Diabetes mellitus tipo 2 en tratamiento con insulina 
+- Dislipemia en tratamiento con estatinas y en seguimiento por su médico de família 
+- Fibrilación auricular permanente en tratamiento con acenocumarol 
+- Miocardiopatía dilatada / Insuficiencia cardíaca con múltiples descompensaciones 
+Debut en 2010 
+- Marcapasos VVIR desde 2012 por fibrilación auricular lenta y pausas > 3 '' , que cursó con insuficiencia cardíaca Ecocardiograma ( 2012 ) : Ventrículo izquierdo dilatado , disfunción global ligera a moderada ( FE 47% ) 
+Movimiento septal anormal 
+Insuficiencia mitral ligera 
+Insuficiencia tricuspídea ligera 
+Sin hipertensión 
+pulmonar 
+ascendente 
+Insuficiencia aórtica ligera 
+Dilatación severa auricular izquierda 
+Dilatación moderada de raíz aórtica y aorta 
+- Ictus isquémico protuberancial izquierdo en febrero 2007 , Etiología indeterminada 
+Cursó con disartria e inestabilidad de la marcha y hemiparesia derecha , recuperada completamente 
+TC simple inicial sin alteraciones 
+RM : lesiones isquémicas crónicas parasagitales izquierdas y protuberancial 
+AngioRM : Estenosis distal bulbo carotídeo izqdo del 55% ; estenosis vertebral izqda ( ostium y V4 ) 
+Intracraneal normal 
+- Deterioro cognitivo leve ( informe de internación en Medicina Interna de _LOCATION_ de 2015 ) 
+- Anemia crónica desde 2007 en tratamiento con hierro y vitamina B12 
+Pangastritis crónica 
+Diagnóstico en noviembre 2016 con fibrogastroscopia realizada por dispepsia 
+- Hiperuricemia / Gota 
+- Insuficiencia renal aguda en 2011 
+Origen multifactorial : vasculópata , función sistólica deprimida , diarrea , tto con IECAs y diuréticos Creatininas de hasta 5,1 mg / dl 
+Requirió dos sesiones de hemodiàlisis 
+- Ginecomasta bilateral en junio de 2012 valorado por Cirugía General se descartó malignidad y se atribuyó a fármacos 
+- Hipertrofia benigna de próstata 
+MEDICACIÓ HABITUAL 
+Atorvastatina 40mg 1comp/24h 
+Informe d'alta d'hospitalització 
+Atrovent 3aplic/6h , Budesonida 2aplic/8h Droglican 1comp/24h 
+Ferro-gradumet 105mg 1comp/24h , Optivite B12 1ampolla/semana Hidrapres 25mg 1comp/24h , Ideos 1000mg/880UI 1comp/24h Mixtard 40UI/24h 
+Omeprazol 20mg 1comp/24h Orfidal 1mg 2comp/24h 
+Mononitrato isosorbida 40mg 1comp/8h , Seguril 40mg 5comp/24h ( 2,5-2,5-0 ) , Boi-K 2comp/12h , Sintrom según pauta 
+Tamsulosina 0,4mg 1comp/24h 
+PROCÉS ACTUAL 
+Paciente que tuvo accidente de moto el día 01/01/2017 ( se cayó de lado mientras conducía la moto ) , con fractura de 5º arco costal izquierdo , fractura marginal meseta tibial interna rodilla izquierda y varias contusiones y erosiones que fueron tratadas de forma conservadora en el _SS_ 
+El 02/01/2016 a las 23:00 h aproximadamente presenta de forma brusca dificultad de emisión del lenguaje ( previamente asintomático a las 22:30h ) por lo que se avisa a SEM y se activa código ictus a las 01:10h ; el paciente llega a Urgencias del nuestro centro a las 01:58h 
+La família refiere mejoría clínica durante el trayecto 
+EXPLORACIÓ FÍSICA 
+FC 82 bpm 
+Tªaxi 36.0 ºC 
+FR rpm Tªrec ºC 
+TA s 142 mmHg SAT O2 99 % 
+TA d 78 mmHg Pes Kg 
+En urgencias : 
+Neurológica : Consciente y orientado , obedece órdenes simples pero se intoxica con las complejas , leve afasia mixta con moderada disartria , no alteración oculomotora ni campimétrica , leve paresia facial derecha central , no alteración de pares craneales bajos , hemiparesia derecha leve , de predominio distal ( la paresia de la extremidad inferior derecha no puntúa en escala de NIHSS ) , impotencia funcional extremidad inferior izquierda secundaria a fractura , no claro déficit sensitivo , RCP flexor bialteral 
+NIHSS : ( 0.0.0 ) 0.0//1 ( 1.0 ) ( 0.0 ) // 0.0.1 2.0 = 5 
+Exploración sistémica : auscultación cardíaca con tonos cardíacos regulares , no se auscultan soplos ni roces , auscultación respiratoria con MVC , sibilancias aisladas en ambos campos pulmonares , abdomen anodino , edemas en EEII bilaterales , no signos de TVP 
+En unidad de ictus : Al ingreso : 
+TA : 143/92 ; freqüència cardíaca : 70bpm ; Temperatura : 36ºC ; Glicemias : 229-311mg/dL 
+Neurológica : Consciente y orientado en las 3 esferas 
+Nomina , evoca , obedece y repite correctamente aunque con ciertas parafasias y disminución de la fluencia , comprende órdenes complejas 
+Oculomotricidad y campimetría normales 
+PINR 
+Disartria moderada / grave 
+Hemipareisia faciobraquial derecha leve : facial con componente superior , miembro superior derecho con paresia predominio distal ; EII no explorada por impotencia funcional por fractura 
+Sin alteración sensitiva 
+No dismetrías 
+NIHSS = 00000/2 ( 00 ) ( 00 ) /00120 = 5 
+Sistémica : AC : tonos cardíacos arrítmicos , sin soplos 
+Pulsos periféricos presentes 
+AP : roncus y sibilancias 
+Informe d'alta d'hospitalització 
+escasos aunque difusos , pero con buena entrada de aire bilateral 
+Abdomen : peristaltismo correcto 
+Muy globuloso , depresible , indoloro 
+Evolutiva : 
+AR : taquipnea 22lpm sostenida 
+Tos con expectoración mucosa espesa 
+Ortopnea , toelra sedestación a 60º 
+Hoy sin roncus 
+Crepitantes húmedos bilaterales en bases y campos medios 
+AC : tonos cardíacos rítmicos 
+Sin signos de IC ( no IY , no edemas en EEII ni pared abdominal , pulsos periféricos corrrectos , extremidades cálidas ) 
+Neurológica : Consciente y orientado en las 3 esferas 
+Menos agresivo , retiramos contenciones 
+Lenguaje sin elementos afásicos 
+Disartria moderada inteligible 
+Oculomotricidad y campimetría por confrontación sin alteraciones 
+Paresia facial central derecha leve 
+Hemiparesia derecha de predominio braquial 
+Sin alteración sensitiva 
+No dismetrías 
+RCP flexor bilateral 
+NIHSS = ( 0.0.0 ) 0.0/1 ( 0.0 ) ( 0.0 ) /0 0.0.1.0=2 
+En planta neurologia : Al ingreso : 
+Neurológica : Consciente y discreta desorientación temporal , obedece ordenes 
+Afasia leve con disatria leve , no alteraciones oculomotoras ni campimetricas 
+Balance muscular normal , no alteraciones sensitivas ni nistagmo 
+Impotencia funcional EII secundaria a fractura 
+RCP flexor bilateral 
+NIHSS = 0.0.0.0.0/0 ( 0.0 ) ( 0.0 ) // 0.0.1.1.0 = 2 
+AC : TCR sin soplos ni roces 
+AR : MVC con sibilancias dispersas en ambos campos pulmonares 
+EEII sin edemas ni signos de TVP 
+EXPLORACIÓ COMPLEMENTÀRIA 
+ECG ( 03.01 ) : Ritmo de marcapasos a 80lpm con morfología de BRIHH 
+Analítica urgente ( 03.01 ) : Hemograma : leucocitos 9100 ( N 80,4% , L 9,5% , M 8,7% ) , Hb 11,9g/dL , Hto 36,5% , plaquetas 203.000 
+Hemostasia : TP 85% , INR 1,13 , fibrinógeno 513mg/dL ; TTPA 28,6seg 
+Bioquímica : glucosa 319mg/dL , urea 49,5mg/dL , creatinina 1,16mg/dL ; Na 137,2mmol/L ; K 3,9mmol/L , PCR 78,5mg/L 
+Orina : esterasa leucocitaria 250 , nitritos negativos , 10-20 leucos / campo 
+TC craneal urgencias ( 03.01 ) : No se observan imágenes compatibles con ictus isquémico 
+Prominencia de surcos de la convexidad infra y supratentoriales de forma proporcionada al tamaño del sistema ventricular compatible con atrofia cerebral difusa 
+Cisternas basales y perimesencefálicas libres 
+Línea media centrada 
+No se aprecian alteraciones óseas 
+Sin otras alteraciones parenquimatosas ni extraaxiales 
+AngioTC urgencias ( 03.01 ) : Arterias intra y extracraneales permeables y sin defectos de repleción 
+Placa de ateroma calcificada en ACI izquierda que condiciona estenosis de 50% aproximadamente la luz arterial , calcificaciones en sifón carotídeo bilateral 
+Analítica ingreso ( 03.01 ) : Glucemia 230 mg / dL , Hemoglobina glicosilada 8.7% 
+Creatinina 1.08mg/dL con FG de 
+63 mL / min 
+Ionograma y perfil hepático normales 
+HDL-colesterol 31.3mg/dL , LDL-colesterol 78mg/dL 
+PCR 73.9mg/L 
+Hormonas tiroideas normales 
+Proteinograma normal 
+Analítica control ( 05.01.17 ) : FG 59mL/min , sodio 141mmol/L , osmlalidad 301mOsm/kg 
+Bioquímica ( 06.01.2017 ) : Glucosa 269 , urea 73.1 , creatinina 1.18 , sodio 138.8 , potasio 3.8 
+Informe d'alta d'hospitalització 
+Analítica de control ( 07.01.2017 ) : Hemograma : Leucocitos 7.700 ( N 7.000 , L 400 , M 300 ) , Hb 12.1 , Hto 37.3 , 
+plaquetas 217.000 
+Coagulación : TP 72% , INR 1.27 , TTPa 27.3seg , Fibrinogeno 441 
+Coprocultivo y clostridium difficile negativos ( 07.01 ) 
+Rx tórax ( 03 y 04.01 ) : Marcado aumento de tamaño de la silueta cardíaca , a expensas principalmente del VI , en relación con posible miocardiopatía dilatada 
+Aumento de densidad perihiliar y basal derecha 
+Marcapasos unicameral con electrodo distal en teórica región del VD 
+Dúplex TSA ( 04.01.2017 ) : 
+Temporal : Buena ventana transcraneal bilateral 
+Sifones carotídeos , ACAs , ACMs y ACPs sin alteraciones del flujo ni alising 
+Occipital : no realizado por situación clínica del paciente ( disnea y tos ) 
+Carótidas : estudio limitado por anatomía del paciente ( cuello corto ) , aunque se logran apreciar ambas bifurcaciones carotídeas , ACCs , ACIs y ACEs 
+GIM aumentado en ambas ACC 
+Placa ateromatosa en ACC distal derecha , hiperecoica , superficie lisa 
+Placa ateromatosa en bifurcación izquierda que se continúa sobre la ACI , iso / hipperecoica , de superficie lisa , textura homogénea , que no condiciona estenosis significativa ( flujo laminar sin cambios en la velocidad ) 
+Vertebrales : visualización limitada por anatomía ; con flujo aparentemente conservados en ambos segmentos V2 y V1 , sin lograr visualizar ostiums 
+Conclusión : Placa ateromatosa iso / hiperecoica en ACI izquierda que no condiciona alteraciones hemodinámicas significativas 
+TC craneal de control ( 05.01 ) : Aparición de dudosa lesión yuxtacortical ( subcortical ) frontal derecha en la convexidad , de pequeño tamaño , que no permite descartar lesión isquémica subaguda en territorio superficial de arteria cerebral media derecha ; sin signos TC de transformación hemorrágica asociados 
+Resto sin cambios respecto TC previo 
+Ecocardiografía transtorácica ( 04.01.17 ) : ventriculo izquierdo moderadamente dilatado y ligeramente hipertrofico con hipocinesia global conj función ventricular severamente deprimida ( FE 35% ) 
+Auricula izquierda severamente dilatada 
+Mínima insuficiencia mitral 
+No se observan trombos intracavitarios 
+Estudio limitado por la agitación del enfermo que impide obtención de un estudio completo ) 
+EVOLUCIÓ CLÍNICA 
+Se trata de un paciente varón de 83 años , mRs 0 , con antecedentes de hipertensión arterial , diabetes mellitus , dislipemia , hiperuricemia , un ictus protuberancial izquierdo con estenosis de vertebral izquierda y ACI izquierda ( 55% ) , fibrilación auricular en tratamiento con acenocumarol , portador de marcapasos , insufiiciencia cardíaca con mútiples reagudizaciones y un accidente con fractura costal y de meseta tibial izquierda el día previo a la consulta que recibieron tratamiento conservador , con suspensión de acenocumarol ; que consulta el 03/01/2017 por presentar dificultad de emisión del lenguaje de 3 horas de evolución 
+Informe d'alta d'hospitalització 
+A su llegada a Urgencias el paciente se encuentra con tendencia a hipertensión arterial , afebril , y la exploración neurológica se puntúa un NIHSS de 5 a expensas de leve afasia mixta , disartria moderada y paresia faciobraquiocrural derecha leve ; en la exploración sistémica destacan sibilancias en auscultación respiratoria 
+El ECG está en ritmo de marcapasos con morfología de bloqueo de rama izquierda , en la analítica destaca aumento de reactantes de fase aguda sin leucocitosis ( que podrían ser reactivas a las fracturas ) , el INR es de 1,13 
+Se realiza TC craneal que no muestra lesión isquémica ni hemorrágica aguda , angioTC craneal muestra una placa de ateroma calcificada en ACI izquierda que condiciona un 50% de estenosis de la luz y calcificaciones en ambos sifones carotídeos 
+Se orienta como probable ictus isquémico agudo de ACM izquierda de etiología indeterminada por dos causas ( fibrilación auricular no anticoagulada y estenosis significativa de ACI izquierda ) 
+Por el antecedente de trasmatismo reciente , la clínica neurológica minor y la edad del paciente se decide no administrar tratamiento fibrinolítico ni endovascular 
+Se ingresa en UIA para control evolutivo y completar estudio 
+Durante el ingreso , se mantiene con hiperglucemia de difícil control , que se controla con insulinoterapia ; hipertensión arterial moderada , que se controla al reiniciar su medicaión habitual 
+A nivel neurológico , presenta leve mejoría con persistencia de disartria leve con disminución de la fluencia verbal , puntuando un NIHSS de 2 
+Presenta dolor en extremidad inferior izquierda con la movilización ( fractura meseta tibial postraumática ) 
+Además , presenta semiología de insuficiencia cardíaca izquierda leve con placa de tórax con signos de congestión pulmonar , por lo que se mantiene terapia con furosemida hasta 40mg cada 6 horas IV y oxígeno ( ha requerido hasta FIO2 de 0.28 ) 
+También se inicia tratamietno con amoxicilina / clavulánico por presentar febrícula , orientándo se como de foco respiratorio vs foco urinario por sedimento con signos de infección 
+Sufre leve alteración de la función renal ( FG hasta 59mL/min ) , que se orienta como secundaria al tratamiento deplectivo y que el control muestra filtrado similar 
+Se ha realizado interconsulta a Traumatología , que indica tratamiento conservador para ambas fracturas y explica que por su parte no hay contraindicación para iniciar rivaroxabán 
+Contultamos a rehabilitación , que pauta tratamiento con logopedia , terapia ocupacional y fisioterapia 
+Como pruebas complementarias , se han realizado una analítica general que muestra una hemoglobina glicada de 8.7% , función renal conservada , ionograma con calcio y fosfato correctos , perfil hepático sin alteraciones , PCR elevada ( 74mg/L ) , perfil lipídico correcto pero con HDL bajos y TSH normal 
+Se realiza una TC craneal de control a los 3 días de inicio que muestra ausencia de lesiones isquémicas ni hemorrágicas y ecocardiograma transtorácico que muestra ritmo de ACXFA , ventriculo izquierdo severemente dilatado , auricula izquierda severamente dilatada , FEVI de 35% con ausencia de trombos intracavitarios 
+Se realiza interconsulta a endocrinologia que ajusta pauta de insulina 
+Dado que es portador de marcapasos no se puede realizar una resonancia magnética para confirmar la presencia de lesión isquémica aguda 
+Se termina orientando como posible ictus isquémico minor de territorio ACM izquierda , de etiología cardioembólica en paciente con fibrilaciónb auricular descoagulado con sintrom , y con estenosis no significativa de ACI izquierda 
+Se decide cambiar anticoagluación de acenocumarol a rivaroxabán 
+Debido a la necesidad de mantener hospitalización para estabilidación de fallo cardíaco en paciente con ictus isquémico cardioembólico reciente , el cambio de anticoagulante , la necesidad de logopedia y la impotencia funcional del miembro inferior izquierdo , se solicita traslado a su centro de referencia 
+AL ALTA : 
+Informe d'alta d'hospitalització 
+NIHSS = 00000/0 ( 00 ) ( 00 ) // 00110 = 2 
+Barthel = 40 
+mRS = 5 
+DIAGNÒSTICS 
+- Ictus minor de ACM izquierda cardioembólico por ACXFA 
+- Fibrilación auicular 
+- Estenosis no significativa de ACI izquierda 
+- HTA 
+- Dislipemia 
+- Diabetes Mellitus tipo II con mal contro metabólico 
+- Descompensación de insuficiencia cardíaca izquierda por miocardiopatía dilatada crónica , actualemnte con Fe 35% 
+- Infección de vía respiratoria baja , inicia el 04.01 tratamietno con amoxicilina clavulancio 
+- Infección de orina 
+- Fractura meseta tibial izquierda con hemartros drenado , tratamietno conservados 
+TRACTAMENT I RECOMANACIONS A L'ALTA 
+- Dieta turmix diabetico 
+- Control constantes 
+- Sedestación con sillón 
+- Control glicemias antes de las comidas y a las 0h 
+- Crioterapia en rodilla izquierda 10 minutos cada 8 horas 
+- Omeprazol 20mg/24h 
+- Inuslina lantus 0-0-32 UI 
+- Insulina novorapid 6-10-10 ajustar segun glicemias 
+- Mononitrato isosorbida 40mg 1-1-1 
+- Hidralazina 25mg 1-1-1 
+- Furosemida 40mg 1-1-1 
+- Atorvastatina 40mg 0-0-1 
+- Metilprednisolona 20mg /24h 
+- Amoxicilina-clavulánico 1g cada /8 horas hasta el 14/01/2017 
+- Rivaroxaban 20mg /24h 
+- Paracetamol 1g /8horas si precisa 
+- Rispertona 1mg si agitación por la noche 
+- Clometiazol 192mg 1-1-1 si precisa 
+- Budesonida 2inhalaciones cada 12horas 
+- Hudson con atrovent cada 6horas 
+- Tamsulosina 1comp/24h 
+CONTROL 
+Traslado a _SS_ habitación _ID_ 
+DESTINACIÓ A L'ALTA : HOSP 
+AGUTS / PSQ 
+Validat per : _NAME_Col·legiat : _ID_ 
+10.01.2017 
+Pàgina 1 de 6 
