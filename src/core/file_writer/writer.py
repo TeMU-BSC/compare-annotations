@@ -4,10 +4,11 @@ import xlsxwriter
 import os
 from unidecode import unidecode
 import itertools
-from src.core.entity.entities import Entities
-from src.core.util.utility import Util
-import src.core.const.const as const
+from core.entity.entities import Entities
+from core.util.utility import Util
+import core.const.const as const
 import numpy as np
+
 
 class WritterXlsx:
 

@@ -1,10 +1,10 @@
 import argparse
-from src.core.entity.entities import Entities
-from src.core.evaluation.iaa import IAA
-from src.core.file_writer.writer import WriterCSV, WritterXlsx
-from src.core.util.utility import Util
-from src.core.evaluation.frequency import FreqCalculator
-from src.core.evaluation.comparison import Comparison
+from core.entity.entities import Entities
+from core.evaluation.iaa import IAA
+from core.file_writer.writer import WriterCSV, WritterXlsx
+from core.util.utility import Util
+from core.evaluation.frequency import FreqCalculator
+from core.evaluation.comparison import Comparison
 
 
 class Eval(object):

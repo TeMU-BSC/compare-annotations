@@ -1,9 +1,8 @@
 import argparse
-
-from src.core.util.utility import Util
-from src.core.entity.entities import Entities
-from src.core.evaluation.comparison import Comparison
-from src.core.file_writer.writer import WritterXlsx
+from core.util.utility import Util
+from core.entity.entities import Entities
+from core.evaluation.comparison import Comparison
+from core.file_writer.writer import WritterXlsx
 
 
 class EvaluationPreAnnotations:
@@ -16,9 +15,6 @@ class EvaluationPreAnnotations:
         self.annotators_notes = None
         self.ctakes_entities = None
 
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="comparing")
     parser.add_argument('--bunch', help='Which bunch is going to src')
@@ -27,10 +23,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-
     bunch = args.bunch
     variable_type = args.variable_type
-
 
     if bunch is None or variable_type is None:
         print("Please set the bunch by --bunch or variable type by --variable_type \n "

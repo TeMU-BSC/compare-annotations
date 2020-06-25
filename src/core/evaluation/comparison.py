@@ -1,6 +1,6 @@
 import itertools
-from src.core.const.const import check_variable_type
-from src.core.entity.entities import Entities
+from core.const.const import check_variable_type
+from core.entity.entities import Entities
 
 
 class Comparison:

@@ -1,13 +1,12 @@
 import difflib
 import os
 import string
-
 from unidecode import unidecode
-
-import src.core.const.const as const
+import core.const.const as const
 
 
 class Entities:
+
     removed_punc_counter = dict()
     removed_punc = dict()
 
@@ -178,7 +177,7 @@ class Entities:
                                 if freq is not None:
                                     freq.update_notacceptance_freq(entity['text'], entity['label'])
                             elif full_line.startswith("#"):
-                                s.append(full_line)
+                                all_hash.append(full_line)
                         for hash in all_hash:
                             row = hash.strip().split("\t", 2)[1].split(" ")[1]
                             if row in keephash:

@@ -1,10 +1,9 @@
 import os
 import json
 import string
-import shutil
 from unidecode import unidecode
-import src.core.const.const as const
-from src.core.entity.entities import Entities
+import core.const.const as const
+from core.entity.entities import Entities
 from pathlib import Path
 
 
