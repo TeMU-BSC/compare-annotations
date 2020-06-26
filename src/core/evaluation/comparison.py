@@ -133,7 +133,7 @@ class Comparison:
                                                   'label': ann_ent['label'], 'old_label': cta_ent['label']}
                                         change_ent.append(entity)
                                         freq.update_acceptance_freq(ann_ent['text'], ann_ent['label'])
-                                        add = False
+                                        add = True
                                         break
                             else:
                                 print("ERROR in " + file)
@@ -151,7 +151,7 @@ class Comparison:
                                       'old_label': cta_ent['label']}
                             change_ent.append(entity)
                             freq.update_acceptance_freq(ann_ent['text'], ann_ent['label'])
-                            add = False
+                            add = True
                             break
                     if add:
                         add_ent.append(ann_ent)
