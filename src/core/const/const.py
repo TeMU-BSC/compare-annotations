@@ -36,6 +36,16 @@ ESCALAS = [
 SUFFIX = ['_previa', '_alta', '_hab']
 PREFIX = ["_SUG_"]
 
+ETILOGIA_LIST = ["a estudio", "aneurisma", "angiopatía amiloide", "ateromatosis", "aterosclerótico",
+                         "Aterotrombótico", "Cardioembólico", "Cavernoma de circunvolución", "Criptogènic",
+                         "criptogénico", "Disecció", "embòlic", "embólico", "ESUS", "Hipertensiva", "Indeterminado",
+                         "indeterminada", "Indeterminado de causa doble",
+                         "Indeterminado por estudio incompleto", "infrecuente", "Inhabitual",
+                         "Lacunar", "malformación arteriovenosa", "mecanisme embòlic",
+                         "secundaria a malformación vascular", "secundaria a tumor"]
+
+
+
 REQUIRED_HEADERS = ["SECCION_DIAGNOSTICO_PRINCIPAL", "SECCION_DIAGNOSTICOS"]
 
 REQUIRED_MAIN_VARIABLES = ["Ictus_isquemico", "Ataque_isquemico_transitorio", "Hemorragia_cerebral"]

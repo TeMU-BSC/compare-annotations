@@ -528,15 +528,6 @@ class WriterCSV:
         check_fre_etilogia_writer = csv.writer(check_fre_etilogia_csv, delimiter='\t', quotechar='"',
                                                quoting=csv.QUOTE_MINIMAL)
 
-        etilogia_list = ["a estudio", "aneurisma", "angiopatía amiloide", "ateromatosis", "aterosclerótico",
-                         "Aterotrombótico", "Cardioembólico", "Cavernoma de circunvolución", "Criptogènic",
-                         "criptogénico", "Disecció", "embòlic", "embólico", "ESUS", "Hipertensiva", "Indeterminado",
-                         "indeterminada", "Indeterminado de causa doble",
-                         "Indeterminado por estudio incompleto", "infrecuente", "Inhabitual",
-                         "Lacunar", "malformación arteriovenosa", "mecanisme embòlic",
-                         "secundaria a malformación vascular", "secundaria a tumor"]
-
-
         etilogia_dict = dict()
 
 
@@ -561,12 +552,12 @@ class WriterCSV:
                     # Check if Etiologia word and the acceptable variables happens together in one line:
                     unaccented_line = unidecode(Util.remove_punc(line)).lower().split()
                     if "etiologia" in unaccented_line:
-                        for etilogial in etilogia_list:
+                        for etilogial in const.ETILOGIA_LIST:
                             unaccented_etilogial = unidecode(etilogial).lower()
                             if unaccented_etilogial in unaccented_line:
                                 check_etilogia_writer.writerow([dir, file, etilogial, begin, line.strip()])
 
-                    for etilogial in etilogia_list:
+                    for etilogial in const.ETILOGIA_LIST:
                         unaccented_etilogial = unidecode(etilogial).lower()
 
                         if unaccented_etilogial in unaccented_line and "etiologia" in unaccented_line:
@@ -595,10 +586,11 @@ class WriterCSV:
                                 dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[0] + "/" + \
                                            dir + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                                0].upper() + "_" + file + "\")"
-                                check_span_writer.writerow([dir_file] + [records[records_seek]['label'],
-                                                                         records[records_seek]['start'],
-                                                                         records[records_seek]['end']
-                                    , records[records_seek]['text']] + ["Accepted"])
+                                
+                                # check_span_writer.writerow([dir_file] + [records[records_seek]['label'],
+                                #                                          records[records_seek]['start'],
+                                #                                          records[records_seek]['end']
+                                #     , records[records_seek]['text']] + ["Accepted"])
                         else:
                             is_correct = Util.call_span_checker(begin, line, records[records_seek])
                             if not is_correct and not (records[records_seek]['label'].startswith("Fecha_") or
