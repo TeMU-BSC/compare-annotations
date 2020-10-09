@@ -4,9 +4,9 @@ import xlsxwriter
 import os
 from unidecode import unidecode
 import itertools
-from core.entity.entities import Entities
-from core.util.utility import Util
-import core.const.const as const
+from src.core.entity.entities import Entities
+from src.core.util.utility import Util
+import src.core.const.const as const
 import numpy as np
 
 
@@ -39,7 +39,10 @@ class WritterXlsx:
             row += 1
 
             for annotator_file, results in annotator_files.items():
-                worksheet.write(row, 0, annotator_file)
+                worksheet.write_url(row, 0,
+                             'https://temu.bsc.es/ICTUSnet/index.xhtml#/' + bunch.split("_")[0] + "/" +
+                                    annotator + "/" + annotator_file.replace(".ann", ""), string=annotator_file.replace(".ann", ""))
+                # worksheet.write(row, 0, annotator_file)
 
                 for records in results['intersection']:
                     worksheet.write(row, 1, records['label'])
@@ -354,7 +357,6 @@ class WritterXlsx:
         #     worksheet_mismatch.write(0, i + 4, annot)
 
 class WriterCSV:
-
     @staticmethod
     def pre_process(entities, pre_processing_dir, bunch):
 
@@ -586,7 +588,7 @@ class WriterCSV:
                                 dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[0] + "/" + \
                                            dir + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                                0].upper() + "_" + file + "\")"
-                                
+
                                 # check_span_writer.writerow([dir_file] + [records[records_seek]['label'],
                                 #                                          records[records_seek]['start'],
                                 #                                          records[records_seek]['end']

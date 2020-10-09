@@ -2,8 +2,8 @@ import os
 import json
 import string
 from unidecode import unidecode
-import core.const.const as const
-from core.entity.entities import Entities
+import src.core.const.const as const
+from src.core.entity.entities import Entities
 from pathlib import Path
 
 
@@ -52,7 +52,17 @@ class Util:
         return statistical_dir
 
     @staticmethod
-    def get_ctakes_annotators_dirs():
+    def get_ctakes_annotators_dirs(parent_dir):
+        if parent_dir is not None:
+            Util.main_dir = os.path.join(parent_dir, "annotations")
+            Util.annotators_dir = os.path.join(Util.main_dir, "manual_annotations")
+            Util.pre_processing_dir = os.path.join(Util.main_dir, "pre_processing")
+            Util.ctakes_dir = os.path.join(Util.main_dir, "pre_annotations")
+
+            Util.analysis_dir = os.path.join(parent_dir, "analysis")
+            Util.all_differences_csv_dir = os.path.join(Util.analysis_dir, "analysis_per_file")
+
+            os.makedirs(Util.pre_processing_dir, exist_ok=True)
         return Util.annotators_dir, Util.ctakes_dir
 
     @staticmethod

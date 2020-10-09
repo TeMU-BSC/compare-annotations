@@ -1,6 +1,6 @@
 import itertools
-from core.const.const import check_variable_type
-from core.entity.entities import Entities
+from src.core.const.const import check_variable_type
+from src.core.entity.entities import Entities
 
 
 class Comparison:
@@ -12,8 +12,8 @@ class Comparison:
         for annotator, annotator_files in annotators_entities.items():
             eval_file_dic = dict()
             for annotator_file, annotator_records_original in annotator_files.items():
-                if ctakes_entities[annotator][annotator_file] is not None:
-                    ctake_records_original = ctakes_entities[annotator][annotator_file]
+                if ctakes_entities[annotator_file] is not None:
+                    ctake_records_original = ctakes_entities[annotator_file]
 
                     annotator_records_witout_suffix = Entities.entities_suffix_prefix_fixer(annotator_records_original)
 

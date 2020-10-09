@@ -1,47 +1,14 @@
 import argparse
-from core.entity.entities import Entities
-from core.evaluation.iaa import IAA
-from core.file_writer.writer import WriterCSV, WritterXlsx
-from core.util.utility import Util
-from core.evaluation.frequency import FreqCalculator
-from core.evaluation.comparison import Comparison
+from src.core.entity.entities import Entities
+from src.core.evaluation.iaa import IAA
+from src.core.file_writer.writer import WriterCSV, WritterXlsx
+from src.core.merge.merge import Merge
+from src.core.util.utility import Util
+from src.core.evaluation.frequency import FreqCalculator
+from src.core.evaluation.comparison import Comparison
 
 
-class Eval(object):
-
-    # def __init__(self):
-    #
-    #     self.headers_name_dic = dict()
-    #     self.headers_type_dic = dict()
-    #
-    #     self.variables_name_dic = dict()
-    #
-    #     self.list_annotators = []
-    #
-    #     self.set = None
-    #
-    #     self.acceptance_rate = dict()
-    #
-    #     self.adds_ann = None
-    #     self.changes_ann = None
-    #     self.no_changes_ann = None
-    #     self.removes_ann = None
-    #     self.new_variables = None
-    #
-    #     self.all_files_list = []
-    #
-    #     self.annotators_entities = None
-    #     self.annotators_notes = None
-    #     self.ctakes_entities = None
-    #
-    #     self.shared_ann_files = None
-    #
-    #     # self.data_dir = os.path.join(self.parentDir, "data")
-    #     self.distros_dict = []
-    #     self.removed_punc_counter = dict()
-    #     self.removed_punc = dict()
-
-
+class EvaluationAnnotations(object):
 
     def IAA(self, adds_ann, changes_ann, annotators_entities, distros_dict, IAA_CSV_dir, save_statistical_dir, annotators_notes, bunch, bunch_2):
 
@@ -73,9 +40,9 @@ if __name__ == "__main__":
         print("Please set the bunch by --bunch arg \n For example: --bunch 08_2020.06.22")
         exit()
 
-    evalu = Eval()
+    evalu = EvaluationAnnotations()
 
-    annotators_dir, ctakes_dir = Util.get_ctakes_annotators_dirs()
+    annotators_dir, ctakes_dir = Util.get_ctakes_annotators_dirs(None)
     IAA_CSV_dir = Util.get_IAA_dirs(bunch)
     statistical_dir = Util.get_statistical_dir(bunch)
 
@@ -90,7 +57,9 @@ if __name__ == "__main__":
 
     WriterCSV.pre_process(evalu.annotators_entities, Util.pre_processing_dir, bunch)
 
-    evalu.ctakes_entities = Entities.get_ctakes_entities(evalu.list_annotators, ctakes_dir, bunch, True)
+    evalu.ctakes_variable, evalu.ctakes_variable_note, evalu.ctakes_section = \
+        Entities.get_ctakes_entities(evalu.list_annotators, ctakes_dir, bunch, True)
+    evalu.ctakes_entities = Merge.merge_normal_variable_section(evalu.ctakes_variable, evalu.ctakes_section)
 
     header_file, varibale_file = Util.get_header_variable_files(bunch)
 
@@ -120,7 +89,7 @@ if __name__ == "__main__":
 
     if bunch_2 is not None:
         check = 0
-        evalu2 = Eval()
+        evalu2 = EvaluationAnnotations()
 
         evalu2.distros_dict = Util.get_shared_reports(bunch)
 
@@ -129,7 +98,9 @@ if __name__ == "__main__":
         evalu2.all_files_list, evalu2.annotators_entities, evalu2.annotators_notes = \
             Entities.get_annotators_entities(evalu2.list_annotators, annotators_dir, bunch, freq=freq, t_number=True)
 
-        evalu2.ctakes_entities = Entities.get_ctakes_entities(evalu2.list_annotators, ctakes_dir, bunch, True)
+        evalu2.ctakes_variable, evalu2.ctakes_variable_note, evalu2.ctakes_section = \
+            Entities.get_ctakes_entities(evalu2.list_annotators, ctakes_dir, bunch, True)
+        evalu2.ctakes_entities = Merge.merge_normal_variable_section(evalu.ctakes_variable, evalu.ctakes_section)
 
         evalu2.adds_ann, evalu2.changes_ann, evalu2.no_changes_ann, evalu2.removes_ann, evalu2.new_variables = \
             Comparison.changed_annotations_by_annotators(
