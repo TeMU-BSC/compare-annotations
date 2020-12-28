@@ -1,7 +1,7 @@
 import argparse
 from src.core.entity.entities import Entities
 from src.core.evaluation.iaa import IAA
-from src.core.file_writer.writer import WriterCSV, WritterXlsx
+from src.core.file_writer.writer import WriterCSV, WriterXlsx
 from src.core.merge.merge import Merge
 from src.core.util.utility import Util
 from src.core.evaluation.frequency import FreqCalculator
@@ -120,6 +120,6 @@ if __name__ == "__main__":
     shared_ann_files_dic = evalu.IAA(evalu.adds_ann, evalu.changes_ann, evalu.annotators_entities, evalu.distros_dict,
                                      IAA_CSV_dir, statistical_dir, evalu.annotators_notes, bunch, bunch_2)
 
-    WritterXlsx.suspecions_labels(shared_ann_files_dic, statistical_dir, annotators_dir, bunch)
+    WriterXlsx.suspecions_labels(shared_ann_files_dic, statistical_dir, annotators_dir, bunch)
 
     print("---Done---")

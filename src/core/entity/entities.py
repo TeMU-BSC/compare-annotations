@@ -13,7 +13,7 @@ class Entities:
 
     @staticmethod
     def update_punc(punc, annotator, who):
-        if who is "annotators" and punc not in Entities.removed_punc:
+        if who == "annotators" and punc not in Entities.removed_punc:
             if annotator not in Entities.removed_punc.keys():
                 Entities.removed_punc[annotator] = [punc]
             else:
@@ -51,7 +51,7 @@ class Entities:
                 text = text.lstrip()
                 start_span += 1 + removed_space
 
-        if who is "annotators" and original_text != text:
+        if who == "annotators" and original_text != text:
             if annotator not in Entities.removed_punc_counter.keys():
                 Entities.removed_punc_counter[annotator] = 1
             else:
@@ -129,6 +129,9 @@ class Entities:
             ctakes_entities = {}
             for annotators_files in os.listdir(os.path.join(ctakes_dir, bunch_prefix, dir)):
                 if annotators_files.endswith(".ann"):
+
+                    if annotators_files.startswith("sonespases_968053009"):
+                        checl = 0
                     first_main_variables = []
                     with open(os.path.join(ctakes_dir, bunch_prefix, dir, annotators_files), "r") as r:
                         entites = []
@@ -138,6 +141,8 @@ class Entities:
                         sections = []
                         pre_header = ""
                         for line in r:
+                            if line.startswith("T10"):
+                                check = 0
                             temp_line = line.strip().split("\t", 2)
                             if line.startswith("T"):
 
@@ -166,17 +171,17 @@ class Entities:
                                 # entity['label'] = checking_label
 
                                 if checking_label.startswith("SECCION_"):
-                                    if checking_label != pre_header:
-                                        if t_number:
-                                            section = {'row': temp_line[0], 'text': checking_text,
-                                                       'start': checking_start,
-                                                       'end': checking_end, 'label': checking_label}
-                                        else:
-                                            section = {'text': checking_text,
-                                                       'start': checking_start,
-                                                       'end': checking_end, 'label': checking_label}
+                                    # if checking_label != pre_header:
+                                    if t_number:
+                                        section = {'row': temp_line[0], 'text': checking_text,
+                                                   'start': checking_start,
+                                                   'end': checking_end, 'label': checking_label}
+                                    else:
+                                        section = {'text': checking_text,
+                                                   'start': checking_start,
+                                                   'end': checking_end, 'label': checking_label}
 
-                                        sections.append(section)
+                                    sections.append(section)
                                     # else:
                                     #     print("X")
                                     pre_header = checking_label
@@ -458,7 +463,7 @@ class Entities:
     def fix_ctakes_entities(bunch, ctakes_dir, merged_variables_hash, section_entities, variable_type):
         for file, sections in section_entities.items():
             print(file)
-            if file.startswith("449274285.utf8"):
+            if file.startswith("sonespases_968053009"):
                 checl = 0
             text_file = open(os.path.join(ctakes_dir, bunch, 'eugenia', file.replace("ann", "txt")))
             lines = text_file.read()
@@ -488,8 +493,9 @@ class Entities:
                 elif variable_type == "TAC":
                     related_lines = lines[current_Section_start_span:next_section_start_span]
                     records = final_label.TAC(section, related_lines, current_Section_start_span, records)
-
-
+                elif variable_type == "DIAGNOSTICOS" and section in const.REQUIRED_HEADERS:
+                    related_lines = lines[current_Section_start_span:next_section_start_span]
+                    records = final_label.Diagnosticos(section, related_lines, current_Section_start_span, records)
 
         return section_entities
 
@@ -500,6 +506,13 @@ class Entities:
         else:
             dict[dir].update(value)
         return dict
+
+    @staticmethod
+    def label_suffix_prefix_fixer(label):
+            if label.startswith("Fecha") or label.startswith("Hora"):
+                return label
+            else:
+                return const.remove_suffix_prefix(label)
 
     @staticmethod
     def entities_suffix_prefix_fixer(records):
@@ -514,7 +527,7 @@ class Entities:
             else:
                 entity['label'] = const.remove_suffix_prefix(record['label'])
 
-            fixed_records.append((entity))
+            fixed_records.append(entity)
         fixed_records_ordered = sorted(fixed_records, key=lambda entity: entity['start'])
 
         return fixed_records_ordered

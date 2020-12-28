@@ -8,14 +8,215 @@ from src.core.entity.entities import Entities
 from src.core.util.utility import Util
 import src.core.const.const as const
 import numpy as np
+import collections
 
 
-class WritterXlsx:
+class WriterXlsx:
+
+    @staticmethod
+    def set_header(worksheet_stat, workbook_example):
+        worksheet_stat.set_column(0, 0, 30)
+        worksheet_stat.set_column(2, 2, 13)
+        worksheet_stat.set_column(3, 4, 15)
+        worksheet_stat.set_column(6, 7, 15)
+        worksheet_stat.set_column(8, 8, 20)
+
+        worksheet_stat.write(0, 0, 'Label')
+        worksheet_stat.write(0, 1, '#File')
+        worksheet_stat.write(0, 2, '#Unique (Number of Variants per Variable/Header)')
+        worksheet_stat.write(0, 3, '#Unique / #File')
+        worksheet_stat.write(0, 4, '#Unique Typo')
+        worksheet_stat.write(0, 5, '#Freq')
+        worksheet_stat.write(0, 6, '#Freq / #File')
+        worksheet_stat.write(0, 7, '#Freq Typo')
+        worksheet_stat.write(0, 8, '#Unique / #Freq (Type Token Ratio for each Variable/Header)')
+        worksheet_stat.write(0, 9, '')
+
+        workbook_example.set_column(0, 100, 20)
+
+        workbook_example.write(0, 0, 'Example Variable/Header (order by Freq)')
+
+    @staticmethod
+    def set_details(sum_freq, typo, worksheet_stat, workbook_example, row, abstract_label, info_dic, number_reports,
+                    original_snomed_type_varience_variable_dic):
+        worksheet_stat.write(row, 0, abstract_label)
+        worksheet_stat.write(row, 2, len(info_dic))
+        worksheet_stat.write(row, 3, len(info_dic) / number_reports)
+
+        values = info_dic.values()
+        sum_freq += sum(values)
+        worksheet_stat.write(row, 5, sum(values))
+        worksheet_stat.write(row, 6, sum(values) / number_reports)
+        worksheet_stat.write(row, 8, len(info_dic) / sum(values))
+
+        sorted_x = sorted(info_dic.items(), key=lambda kv: kv[1], reverse=True)
+
+        col = 10
+        # worksheet.write(row + 1, col-1, "#Freq:")
+
+        variance = original_snomed_type_varience_variable_dic.get(abstract_label.split("#")[0])
+        list_variance = []
+
+        freq_typo = 0
+        unique_typo = 0
+        if variance:
+            list_variance = list(variance.keys())
+
+        workbook_example.write(1, row - 2, abstract_label)
+
+        for i, _tuple in enumerate(sorted_x):
+            workbook_example.write(i + 2, row - 2, str(_tuple[0]))
+            # worksheet_stat.write(row, col + i, str(_tuple))
+            # worksheet.write(row, col + i, str(_tuple[0]))
+            # worksheet.write(row+1, col + i, str(_tuple[1]))
+            entity_unicode = unidecode(_tuple[0]).lower() if len(_tuple[0]) != 1 else unidecode(_tuple[0])
+            if variance and abstract_label not in const.ESCALAS and entity_unicode not in list_variance:
+                typo += _tuple[1]
+                unique_typo += 1
+                freq_typo += _tuple[1]
+
+        if variance and abstract_label not in const.ESCALAS:
+            worksheet_stat.write(row, 4, unique_typo)
+            worksheet_stat.write(row, 7, freq_typo)
+
+        return sum_freq, typo
+
+    @staticmethod
+    def set_avg_var_per_hospital(row, worksheet, sum_freq, number_reports, typo):
+        row += 1
+        worksheet.write(row, 0, "AVG Variable/Header per File")
+        worksheet.write(row, 1, sum_freq / number_reports)
+        row += 1
+        if typo != 0:
+            worksheet.write(row, 0, "AVG Typo/Miss_Spelling per File (Except of ESCALAS and FECHA/HORA/TIEMPO")
+            worksheet.write(row, 1, typo / number_reports)
+
+    @staticmethod
+    def per_hospital(merged_hospital, statistical_dir, bunch, hospital_name, records_hopistal,
+                     snomed_type_varience_variable_dic):
+        statistical_information_per_hospital_xlsx = os.path.join(statistical_dir, 'Set_' + bunch +
+                                                                 '_statistical_information_per_hospital_' + hospital_name + '.xlsx')
+        workbook_stat = xlsxwriter.Workbook(statistical_information_per_hospital_xlsx)
+
+        example_per_var_hospital_xlsx = os.path.join(statistical_dir, 'Set_' + bunch +
+                                                     '_example_per_var_hospital_' + hospital_name + '.xlsx')
+        workbook_example = xlsxwriter.Workbook(example_per_var_hospital_xlsx)
+
+        # for hospital_name, records_hopistal in hospital_names.items():
+
+        result = merged_hospital[hospital_name]
+
+        worksheet_stat = workbook_stat.add_worksheet("OVERVIEW")
+        worksheet_example = workbook_example.add_worksheet("OVERVIEW")
+
+        WriterXlsx.set_header(worksheet_stat, worksheet_example)
+        row = 1
+
+        number_reports = len(records_hopistal)
+        worksheet_stat.write(row, 1, number_reports)
+        row += 1
+
+        sorted_results = sorted(result.items(), key=lambda kv: kv[0])
+        sorted_dict_results = collections.OrderedDict(sorted_results)
+
+        sum_freq = 0
+        typo = 0
+        for abstract_label, info_dic in sorted_dict_results.items():
+            if abstract_label == 'Lateralizacion':
+                x = 0
+            if abstract_label != "ARCHETYPE":
+                sum_freq, typo = WriterXlsx.set_details(sum_freq, typo, worksheet_stat, worksheet_example, row,
+                                                        abstract_label, info_dic, number_reports,
+                                                        snomed_type_varience_variable_dic)
+
+                if hospital_name == 'all' and abstract_label not in ['TIEMPO', 'FECHA', 'HORA']:
+                    typo_file = open(os.path.join(statistical_dir, abstract_label + '_typo.txt'), 'w')
+                    original_file = open(os.path.join(statistical_dir, abstract_label + '_original.txt'), 'w')
+                    sorted_x = sorted(info_dic.items(), key=lambda kv: kv[1], reverse=True)
+                    variance = snomed_type_varience_variable_dic.get(abstract_label.split("#")[0])
+                    list_variance = []
+
+                    freq_typo = 0
+                    unique_typo = 0
+                    uniq_typo = []
+                    if variance:
+                        list_variance = list(variance.keys())
+                    for i, _tuple in enumerate(sorted_x):
+                        entitie_unicode = unidecode(_tuple[0]).lower() if len(_tuple[0]) != 1 else unidecode(_tuple[0])
+                        if variance and abstract_label and entitie_unicode not in list_variance and entitie_unicode not in uniq_typo:
+                            typo_file.write(str(_tuple[0]) + '\n')
+                            uniq_typo.append(entitie_unicode)
+                    for var in list_variance:
+                        original_file.write(var + '\n')
+
+                    typo_file.close()
+                    original_file.close()
+                        # worksheet_stat.write(row, col + i, str(_tuple))
+                        # worksheet.write(row, col + i, str(_tuple[0]))
+                        # worksheet.write(row+1, col + i, str(_tuple[1]))
+
+
+
+
+                row += 1
+
+        WriterXlsx.set_avg_var_per_hospital(row, worksheet_stat, sum_freq, number_reports, typo)
+
+        archetype = sorted_dict_results["ARCHETYPE"]
+
+        sorted_archetype = sorted(archetype.items(), key=lambda kv: kv[0])
+        sorted_dict_archetype = collections.OrderedDict(sorted_archetype)
+
+        worksheet_stat = workbook_stat.add_worksheet("SECCION")
+        worksheet_example = workbook_example.add_worksheet("SECCION")
+
+        WriterXlsx.set_header(worksheet_stat, worksheet_example)
+        row = 1
+
+        number_reports = len(records_hopistal)
+        worksheet_stat.write(row, 1, number_reports)
+        row += 1
+
+        sum_freq = 0
+        typo = 0
+        for abstract_label, info_dic in sorted_dict_archetype.items():
+            if abstract_label.startswith("SECCION"):
+                sum_freq, typo = WriterXlsx.set_details(sum_freq, typo, worksheet_stat, worksheet_example, row,
+                                                        abstract_label.split("SECCION_")[-1], info_dic, number_reports,
+                                                        snomed_type_varience_variable_dic)
+
+                row += 1
+
+        WriterXlsx.set_avg_var_per_hospital(row, worksheet_stat, sum_freq, number_reports, typo)
+
+        worksheet_stat = workbook_stat.add_worksheet("ALL ARCHETYPES")
+        worksheet_example = workbook_example.add_worksheet("ALL ARCHETYPES")
+
+        WriterXlsx.set_header(worksheet_stat, worksheet_example)
+        row = 1
+
+        number_reports = len(records_hopistal)
+        worksheet_stat.write(row, 1, number_reports)
+        row += 1
+
+        sum_freq = 0
+        typo = 0
+        for abstract_label, info_dic in sorted_dict_archetype.items():
+            if not abstract_label.startswith("SECCION"):
+                sum_freq, typo = WriterXlsx.set_details(sum_freq, typo, worksheet_stat, worksheet_example, row,
+                                                        abstract_label, info_dic, number_reports,
+                                                        snomed_type_varience_variable_dic)
+                row += 1
+
+        WriterXlsx.set_avg_var_per_hospital(row, worksheet_stat, sum_freq, number_reports, typo)
+
+        workbook_stat.close()
+        workbook_example.close()
 
     @staticmethod
     def ctakes_annotatots(result_evaluation, statistical_dir, bunch, variabel_tyep):
 
-        evalute_ctakes_annotators_xlsx = os.path.join(statistical_dir , 'Set_' + bunch +
+        evalute_ctakes_annotators_xlsx = os.path.join(statistical_dir, 'Set_' + bunch +
                                                       '_evaluation_ctakes_annotators_' + variabel_tyep + '.xlsx')
 
         workbook = xlsxwriter.Workbook(evalute_ctakes_annotators_xlsx)
@@ -40,8 +241,9 @@ class WritterXlsx:
 
             for annotator_file, results in annotator_files.items():
                 worksheet.write_url(row, 0,
-                             'https://temu.bsc.es/ICTUSnet/index.xhtml#/' + bunch.split("_")[0] + "/" +
-                                    annotator + "/" + annotator_file.replace(".ann", ""), string=annotator_file.replace(".ann", ""))
+                                    'https://temu.bsc.es/ICTUSnet/index.xhtml#/' + bunch.split("_")[0] + "/" +
+                                    annotator + "/" + annotator_file.replace(".ann", ""),
+                                    string=annotator_file.replace(".ann", ""))
                 # worksheet.write(row, 0, annotator_file)
 
                 for records in results['intersection']:
@@ -75,7 +277,7 @@ class WritterXlsx:
                     worksheet.write(row, 7, '0')
 
                     row += 1
-                    annotator_more +=1
+                    annotator_more += 1
 
             denominator = (intersection + ctakes_more + annotator_more)
 
@@ -85,7 +287,6 @@ class WritterXlsx:
                 worksheet.write(1, 8, intersection / denominator)
 
         workbook.close()
-
 
     @staticmethod
     def suspecions_labels(shared_ann_files_dic, save_statistical_dir, annotators_dir, bunch):
@@ -115,8 +316,6 @@ class WritterXlsx:
                                 i['end'] == j['end'] and
                                 i['label'] == j['label'] and
                                 i['text'] == j['text']]
-
-
 
                 second_more = list(itertools.filterfalse(lambda x: x in listA, listB))
                 first_more = list(itertools.filterfalse(lambda x: x in listB, listA))
@@ -216,7 +415,7 @@ class WritterXlsx:
                 # f_txt = open(os.path.join(annotators_dir, list_annotators[0], self.set.split("-with-")[0], file.replace(".ann", ".txt")),
                 #              "r")
 
-                file_ = os.path.join(annotators_dir, bunch.split("-with-")[0], list_annotators[0] ,
+                file_ = os.path.join(annotators_dir, bunch.split("-with-")[0], list_annotators[0],
                                      file.replace(".ann", ".txt"))
                 if os.path.isfile(file_):
                     f_txt = open(file_, "r")
@@ -251,7 +450,7 @@ class WritterXlsx:
                             counter = sheets_counter[records[records_seek]['label']]
                             # ws.write(counter, 0, file)
                             ws.write_url(counter, 0,
-                                         'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/.' + bunch.split("_")[0]+ "/" +
+                                         'http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/.' + bunch.split("_")[0] + "/" +
                                          list_annotators[0] + '/#/.' + bunch.split("_")[0] + "/" +
                                          list_annotators[1]
                                          + "/" + file.replace(".ann", ""), string=file)
@@ -288,12 +487,12 @@ class WritterXlsx:
                 # f_txt = open(os.path.join(annotators_dir, list_annotators[1], self.set.split("-with-")[1], file.replace(".ann", ".txt")),
                 #              "r")
                 #
-                file_ = os.path.join(annotators_dir,  bunch.split("-with-")[0], list_annotators[1],
+                file_ = os.path.join(annotators_dir, bunch.split("-with-")[0], list_annotators[1],
                                      file.replace(".ann", ".txt"))
                 if os.path.isfile(file_):
                     f_txt = open(file_, "r")
                 else:
-                    file_ = os.path.join(annotators_dir,  bunch.split("-with-")[1], list_annotators[1],
+                    file_ = os.path.join(annotators_dir, bunch.split("-with-")[1], list_annotators[1],
                                          file.replace(".ann", ".txt"))
                     f_txt = open(file_, "r")
 
@@ -356,6 +555,7 @@ class WritterXlsx:
         #     worksheet.write(0, i + 4, annot)
         #     worksheet_mismatch.write(0, i + 4, annot)
 
+
 class WriterCSV:
     @staticmethod
     def pre_process(entities, pre_processing_dir, bunch):
@@ -373,7 +573,6 @@ class WriterCSV:
     @staticmethod
     def freq_acceptance_rate(statical_analysis_dir, bunch, freq):
         ordered_acceptance_rate = OrderedDict(sorted(freq.acceptance_rate.items(), key=lambda t: t[0]))
-
 
         freq_all_csv = open(os.path.join(statical_analysis_dir, "Set_" + bunch + "_acceptance_freq_all.csv"), "w")
 
@@ -399,9 +598,9 @@ class WriterCSV:
         freq_all_csv.close()
         freq_top_csv.close()
 
-
     @staticmethod
-    def changed_annotations_per_file(adds_ann, changes_ann, no_changes_ann, removes_ann, bunch, all_differences_csv_dir):
+    def changed_annotations_per_file(adds_ann, changes_ann, no_changes_ann, removes_ann, bunch,
+                                     all_differences_csv_dir):
         stat = dict()
         all_changes = {"added": adds_ann, "changed": changes_ann, "accepted": no_changes_ann,
                        "removed": removes_ann}
@@ -461,7 +660,6 @@ class WriterCSV:
             # csv_writer.writerow(["Number varibales that fixed span happend", self.removed_punc_counter])
         stat_csv.close()
 
-
     @staticmethod
     def new_variables_sections(statical_analysis_dir, headers_name_dic, headers_type_dic,
                                variables_name_dic, new_variables, bunch):
@@ -502,8 +700,6 @@ class WriterCSV:
         sec_csv.close()
         print("Finish new added Variables that we have already in our dictionary")
 
-
-
     @staticmethod
     def checking_variables_depended_on_text(annotators_entities, adds_ann, changes_ann, no_changes_ann,
                                             new_variables, annotators_dir, statical_analysis_dir, bunch):
@@ -520,10 +716,10 @@ class WriterCSV:
             os.path.join(statical_analysis_dir, "Set_" + bunch + "_checking_etilogia_variables.csv"), "w")
         check_etilogia_writer = csv.writer(check_etilogia_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-
         check_fecha_hora_dependency_csv = open(
             os.path.join(statical_analysis_dir, "Set_" + bunch + "_checking_fecha_hora_dependency.csv"), "w")
-        check_fecha_hora_dependency_writer = csv.writer(check_fecha_hora_dependency_csv, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        check_fecha_hora_dependency_writer = csv.writer(check_fecha_hora_dependency_csv, delimiter='\t', quotechar='"',
+                                                        quoting=csv.QUOTE_MINIMAL)
 
         check_fre_etilogia_csv = open(
             os.path.join(statical_analysis_dir, "Set_" + bunch + "_checking_freq_etilogia_variables.csv"), "w")
@@ -531,7 +727,6 @@ class WriterCSV:
                                                quoting=csv.QUOTE_MINIMAL)
 
         etilogia_dict = dict()
-
 
         for dir, files in annotators_entities.items():
             for file, records in files.items():
@@ -585,7 +780,8 @@ class WriterCSV:
                             if not is_correct and not (records[records_seek]['label'].startswith("Fecha_") or
                                                        records[records_seek]['label'].startswith("Hora_") or
                                                        records[records_seek]['label'].startswith("Tiempo_")):
-                                dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[0] + "/" + \
+                                dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[
+                                    0] + "/" + \
                                            dir + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                                0].upper() + "_" + file + "\")"
 
@@ -598,28 +794,27 @@ class WriterCSV:
                             if not is_correct and not (records[records_seek]['label'].startswith("Fecha_") or
                                                        records[records_seek]['label'].startswith("Hora_") or
                                                        records[records_seek]['label'].startswith("Tiempo_")):
-                                dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[0]  + "/" + \
-                                           dir+ "/" + file.replace(".ann", "") + "\";\"" + dir[
+                                dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[
+                                    0] + "/" + \
+                                           dir + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                                0].upper() + "_" + file + "\")"
                                 check_span_writer.writerow([dir_file] + [records[records_seek]['label'],
                                                                          records[records_seek]['start'],
                                                                          records[records_seek]['end']
                                     , records[records_seek]['text']])
 
-
                         if records[records_seek]['label'] in const.FECHA_HORA_DEPENDENCIES.keys() or \
                                 any(records[records_seek]['label'] == y
                                     for x in const.FECHA_HORA_DEPENDENCIES.values() for y in x):
                             checker_list.append(records[records_seek]['label'])
 
-
-
                         records_seek += 1
 
                     mistake = Util.checking_fecha_hora_dependencies(checker_list)
                     for mis in mistake:
-                        dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[0]  + "/" + \
-                                   dir+ "/" + file.replace(".ann", "") + "\";\"" + dir[
+                        dir_file = "=HYPERLINK(\"http://temu.bsc.es/ICTUSnet/index.xhtml#/" + bunch.split("_")[
+                            0] + "/" + \
+                                   dir + "/" + file.replace(".ann", "") + "\";\"" + dir[
                                        0].upper() + "_" + file + "\")"
                         check_fecha_hora_dependency_writer.writerow([dir_file] + [mis] + [line.strip()])
                     begin += line_size
@@ -675,12 +870,12 @@ class WriterCSV:
                                 + "/" + file.replace(".ann", "") + "\n")
                 else:
                     if os.path.isfile(os.path.join(annotators_dir, bunch.split("-")[0], list_annotators[0], file)):
-                        w_mis.write('http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' +  list_annotators[0] + "/" +
+                        w_mis.write('http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/" +
                                     bunch.split("_")[0] + '/#/' + list_annotators[1] + "/" + bunch_2.split("_")[0]
                                     + "/" + file.replace(".ann", "") + "\n")
                     else:
                         w_mis.write('http://temu.bsc.es/ICTUSnet/diff.xhtml?diff=/' + list_annotators[0] + "/" +
-                                    bunch_2.split("_")[0]  + '/#/' + list_annotators[1] + "/" + bunch.split("_")[0]
+                                    bunch_2.split("_")[0] + '/#/' + list_annotators[1] + "/" + bunch.split("_")[0]
                                     + "/" + file.replace(".ann", "") + "\n")
 
                 intersection = set(annotators[list_annotators[0]]).intersection(
@@ -694,7 +889,6 @@ class WriterCSV:
                     csv_writer.writerow([rec] + ["X", ""])
                 for rec in second_more:
                     csv_writer.writerow([rec] + ["", "X"])
-
 
     @staticmethod
     def IAA_Score_mismatched(adds_ann, changes_ann, save_statistical_dir, shared_ann_files,
@@ -921,10 +1115,12 @@ class WriterCSV:
                         normolized_note_2 = None
                         if rec2[0].startswith('Fecha_') or rec2[0].startswith('Hora_') or rec2[0].startswith('Tiempo_'):
                             list_notes = annotators_notes[list_annotators[0]][file]
-                            normolized_note_1 = Entities.note_normolized_finder(annotators_entities, file, list_annotators[0], rec_f, list_notes)
+                            normolized_note_1 = Entities.note_normolized_finder(annotators_entities, file,
+                                                                                list_annotators[0], rec_f, list_notes)
 
                             list_notes = annotators_notes[list_annotators[1]][file]
-                            normolized_note_2 = Entities.note_normolized_finder(annotators_entities, file, list_annotators[1], rec2, list_notes)
+                            normolized_note_2 = Entities.note_normolized_finder(annotators_entities, file,
+                                                                                list_annotators[1], rec2, list_notes)
                             fht = False
 
                         if fht or (normolized_note_1 == normolized_note_2 or rec_f[3] == rec2[3]):
@@ -1066,6 +1262,10 @@ class WriterCSV:
                     worksheet_mismatch.write(counter_mistmatch, 5, list_ann[1])
                     counter_mistmatch += 1
 
+                if len(first_more) == 0 and len(second_more) == 0:
+                    worksheet_mismatch.hide()
+                else:
+                    worksheet_mismatch.activate()
             worksheet_details_codemapper.write(just_row, 0, file)
             IAA_matrix_general_all += IAA_matrix_all
             IAA_matrix_general_changed += IAA_matrix_changed
@@ -1144,7 +1344,7 @@ class WriterCSV:
 
             worksheet_details_codemapper.write(just_row, 2, K_original)
 
-            if K_CodeMapper is "Zero" or K_original is "Zero":
+            if K_CodeMapper == "Zero" or K_original == "Zero":
                 worksheet_details_codemapper.write(just_row, 3, "Zero")
             else:
                 worksheet_details_codemapper.write(just_row, 3, K_CodeMapper - K_original)

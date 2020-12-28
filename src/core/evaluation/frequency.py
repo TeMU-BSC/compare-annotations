@@ -5,14 +5,12 @@ class FreqCalculator:
     def __init__(self):
         self.acceptance_rate = dict()
 
-
     @staticmethod
     def normolized_text(text_original):
         normolized_whitespace = " ".join(text_original.split())
         unaccented_string = unidecode(normolized_whitespace)
 
         return unaccented_string.lower()
-
 
     def update_notacceptance_freq(self, text_original, lable_original):
         if lable_original.startswith("_SUG_"):

@@ -4,13 +4,13 @@ from src.core.merge.merge import Merge
 from src.core.util.utility import Util
 from src.core.entity.entities import Entities
 from src.core.evaluation.comparison import Comparison
-from src.core.file_writer.writer import WritterXlsx
+from src.core.file_writer.writer import WriterXlsx
 
 
 class EvaluationPreAnnotations:
 
     def __init__(self):
-        self.v = "0.1"
+        self.v = "0.2"
         self.list_annotators = []
         self.all_files = None
         self.annotators_entities = None
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     result_evaluation = Comparison.ctakes_annotators_per_type(
         evalu.ctakes_entities, evalu.annotators_entities, variable_type)
 
-    WritterXlsx.ctakes_annotatots(result_evaluation, statistical_dir, bunch, variable_type)
+    WriterXlsx.ctakes_annotatots(result_evaluation, statistical_dir, bunch, variable_type)
 
 
     print("Done")

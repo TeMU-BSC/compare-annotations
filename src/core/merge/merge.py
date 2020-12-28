@@ -6,6 +6,52 @@ from src.core.util.utility import Util
 class Merge:
 
     @staticmethod
+    def merge_var_hospital(result, hospita_names_dic):
+        merged_file = dict()
+
+        for annotator_file, annotator_records in result.items():
+            hospital_name = hospita_names_dic.get(annotator_file)
+            per_hospital = merged_file.get(hospital_name) if hospital_name in \
+                                                                merged_file.keys() else {"ARCHETYPE": {}}
+            for record in annotator_records:
+                label = record['label']
+                if label not in per_hospital["ARCHETYPE"].keys():
+                    per_hospital["ARCHETYPE"][label] = {record['text']: 1}
+                elif not label.startswith("SECCION_") or  annotator_file not in label.keys():
+                    temp_dic = per_hospital["ARCHETYPE"][label]
+                    if record['text'] not in temp_dic.keys():
+                        temp_dic[record['text']] = 1
+                    else:
+                        temp = temp_dic[record['text']]
+                        temp_dic.update({record['text']: temp+1})
+                    per_hospital["ARCHETYPE"].update({label: temp_dic})
+
+                supertype = Util.archetype_finder(label)
+                if supertype is not None:
+                    if supertype not in per_hospital.keys():
+                        per_hospital[supertype] = {record['text']: 1}
+                    else:
+                        temp_dic = per_hospital[supertype]
+                        if record['text'] not in temp_dic.keys():
+                            temp_dic[record['text']] = 1
+                        else:
+                            temp = temp_dic[record['text']]
+                            temp_dic.update({record['text']: temp+1})
+                        per_hospital.update({supertype: temp_dic})
+            merged_file.update({hospital_name: per_hospital})
+
+        # number_hospital = 0
+        #
+        # for file in hospital_list:
+        #     number_hospital += 1
+        #     file_ann = file.replace(".txt", ".ann")
+        #     parse_info = result[file_ann]
+        #     for key, value in parse_info.items():
+        #         if key != "ARCHETYPE":
+        #             None
+
+
+    @staticmethod
     def merge_variables_sections(variables, sections):
 
         removed_varibale = 0

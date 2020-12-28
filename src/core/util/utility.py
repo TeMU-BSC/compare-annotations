@@ -1,3 +1,4 @@
+import itertools
 import os
 import json
 import string
@@ -5,6 +6,7 @@ from unidecode import unidecode
 import src.core.const.const as const
 from src.core.entity.entities import Entities
 from pathlib import Path
+import difflib
 
 
 class Util:
@@ -24,14 +26,50 @@ class Util:
     os.makedirs(pre_processing_dir, exist_ok=True)
 
 
+
+    @staticmethod
+    def similarity_diff(candidate_name, line):
+        """
+        :param line: input line
+        :return:
+            The most similarity defined section with the given line
+        """
+
+        list_similarities = difflib.get_close_matches(line, candidate_name.keys(), 1, 0.85)
+        if len(list_similarities) > 0:
+            return candidate_name.get(list_similarities[0]), True
+        else:
+            return "", False
+
+    @staticmethod
+    def get_annotated_corpora(dir_annotated_corpora):
+        list_files = []
+        for reports in os.listdir(dir_annotated_corpora):
+            if reports.endswith(".txt") and not reports.startswith("sonespases"):
+                list_files.append(reports)
+        return list_files
+
+    @staticmethod
+    def similarity_words(candidate_name, line):
+        """
+        :param line: input line
+        :return:
+            The most similarity defined section with the given line
+        """
+
+        list_similarities = difflib.get_close_matches(line, candidate_name, 1, 0.70)
+        if len(list_similarities) > 0:
+            return list_similarities[0], True
+        else:
+            return "", False
+
     @staticmethod
     def reading_duplicated_files(bunch, data_dir):
         loaded_json = os.path.join(data_dir, "Duplicated_files.txt")
 
         with open(loaded_json, 'r') as f:
             distros_dict = json.load(f)
-
-        if bunch.split("_")[0] is not distros_dict:
+        if bunch.split("_")[0] not in distros_dict.keys():
             return []
         else:
             return distros_dict.get(bunch.split("_")[0])
@@ -44,6 +82,245 @@ class Util:
 
         return IAA_CSV_dir
 
+    @staticmethod
+    def get_all_bunches(bunch):
+        bunches = bunch.split("-")
+        list_bunches = []
+        suffix = bunches[0].split("_")[-1] if len(bunches[0].split("_")) > 1 else None
+        for bnch in range(int(bunches[0].split("_")[0]), int(bunches[1].split("_")[0])+1):
+            list_bunches.append(str(bnch) if bnch >=10 else "0" + str(bnch))
+
+        return list_bunches, suffix
+
+    @staticmethod
+    def archetype_finder(label):
+        if label.startswith("Fecha"):
+            return "FECHA"
+        elif label.startswith("Hora"):
+            return "HORA"
+        elif label.startswith("Tiempo"):
+            return "TIEMPO"
+        elif not label.startswith("SECCION_"):
+            return label
+        # for type in const.ALL_TYPES:
+        #     type_list = const.get_const(type)
+        #     if label in type_list:
+        #         return type
+
+    @staticmethod
+    def get_file_hospital(all_files):
+        hospital_dic = {}
+        relacio_codis_dic = Util.get_marata_hospitals()
+        for file in all_files:
+            if file.startswith("sonespases_"):
+                hospital_dic[file] = "sonespases"  # = Util.update_dic(hospital_dic, file, "sonespases")
+            else:
+                #hospital_dic[file] = "aquas"  #Util.update_dic(hospital_dic, file, "aquas")
+                file_name = file.split(".")[0]
+                if file_name in relacio_codis_dic.keys():
+                    hospital_dic[file] =  relacio_codis_dic[file_name]  #= Util.update_dic(hospital_dic, file, relacio_codis_dic[file_name])
+
+        return hospital_dic
+
+    @staticmethod
+    def get_marata_hospitals():
+        relacio_codis = os.path.join(Util.data_dir, "excel_ID_stpau_mutua_mar.csv")
+        relacio_codis_files = open(relacio_codis, "r+")
+        relacio_codis_dic = dict()
+        for f in relacio_codis_files:
+            file_code = f.strip().split(",")
+            relacio_codis_dic[file_code[0]] = file_code[1]
+        return relacio_codis_dic
+
+    @staticmethod
+    def printPatternUtil(extended_var, string, buff, i, j, n):
+
+        if i == n:
+            #buff[j] = '&# 092;&# 048;'
+            extended_var.append("".join(buff[:j]))
+            return
+
+        # Either put the character
+        buff[j] = string[i]
+        Util.printPatternUtil(extended_var, string, buff, i + 1,
+                         j + 1, n)
+
+        # Or put a space followed by next character
+        buff[j] = ' '
+        buff[j + 1] = string[i]
+
+        Util.printPatternUtil(extended_var, string, buff, i + 1,
+                         j + 2, n)
+
+    # This function creates buf[] to
+    # store individual output string
+    # and uses printPatternUtil() to
+    # print all permutations.
+    @staticmethod
+    def printPattern(string):
+        extended_var = []
+        splited_string = string.split(" ")
+        n = len(splited_string)
+
+        # Buffer to hold the string
+        # containing spaces
+
+        # 2n - 1 characters and 1 string terminator
+        buff = [0] * (2 * n)
+
+        # Copy the first character as it is,
+        # since it will be always
+        # at first position
+        buff[0] = splited_string[0]
+
+        Util.printPatternUtil(extended_var, splited_string, buff, 1, 1, n)
+        return extended_var
+
+    @staticmethod
+    def extend_varience(varience):
+
+        extended_var = Util.printPattern(varience)
+        return extended_var
+
+    @staticmethod
+    def get_type_variable_varience_original():
+        snomed = os.path.join(Util.data_dir, "SNOMNED_DIC.csv")
+        snomed_dic = open(snomed, "r+")
+        snomed_type_variable_varience_dic = dict()
+        snomed_type_varience_variable_dic = dict()
+
+        for f in snomed_dic:
+            file_code = f.strip().split("|")
+            file_code[1] = file_code[1].split("_SUG_")[-1]
+            file_code[2] = unidecode(file_code[2]).lower()
+            file_code[3] = unidecode(file_code[3]).lower() if len(file_code[3]) != 1 else unidecode(file_code[3])
+
+
+            if file_code[1]not in snomed_type_variable_varience_dic.keys():
+                snomed_type_variable_varience_dic[file_code[1]] = {file_code[2]: [file_code[3]]}
+                snomed_type_varience_variable_dic[file_code[1]] = {file_code[3]: file_code[2]}
+            else:
+                type_variance = snomed_type_varience_variable_dic[file_code[1]]
+                type_variance[file_code[3]] = file_code[2]
+                snomed_type_varience_variable_dic.update({file_code[1]: type_variance})
+
+                type_variable = snomed_type_variable_varience_dic[file_code[1]]
+                if file_code[2] not in type_variable.keys():
+                    type_variable[file_code[2]] = [file_code[3]]
+                else:
+                    variance = type_variable[file_code[2]]
+                    variance.append(file_code[3])
+                    type_variable.update({file_code[2]: variance})
+                snomed_type_variable_varience_dic.update({file_code[1]:type_variable})
+
+        header = os.path.join(Util.data_dir, "headers.txt")
+        header_dic = open(header, "r+")
+
+        for f in header_dic:
+            f = "\t" +f.strip()
+            file_code = f.split("\t")
+            file_code[1] = file_code[2].split("_SUG_")[-1]
+            file_code[2] = file_code[2].split("_SUG_")[-1]
+            file_code[3] = unidecode(file_code[3]).lower()
+
+            if file_code[1] not in snomed_type_variable_varience_dic.keys():
+                snomed_type_variable_varience_dic[file_code[1]] = {file_code[2]: [file_code[3]]}
+                snomed_type_varience_variable_dic[file_code[1]] = {file_code[3]: file_code[2]}
+            else:
+                type_variance = snomed_type_varience_variable_dic[file_code[1]]
+                type_variance[file_code[3]] = file_code[2]
+                snomed_type_varience_variable_dic.update({file_code[1]: type_variance})
+
+                type_variable = snomed_type_variable_varience_dic[file_code[1]]
+                if file_code[2] not in type_variable.keys():
+                    type_variable[file_code[2]] = [file_code[3]]
+                else:
+                    variance = type_variable[file_code[2]]
+                    variance.append(file_code[3])
+                    type_variable.update({file_code[2]: variance})
+                snomed_type_variable_varience_dic.update({file_code[1]: type_variable})
+
+            #
+            #
+            # snomed_type_variable_varience_dic[file_code[1].split("_SUG_")[-1] + "#" + file_code[2]] = file_code[3]
+            # if file_code[3] not in snomed_type_varience_variable_dic.keys():
+            #     snomed_type_varience_variable_dic[file_code[3]] = [file_code[1].split("_SUG_")[-1] + "#" + file_code[2]]
+            # else:
+            #     temp = snomed_type_varience_variable_dic[file_code[3]]
+            #     temp.append(file_code[1].split("_SUG_")[-1] + "#" + file_code[2])
+            #     snomed_type_varience_variable_dic.update({file_code[3]:temp})
+        return snomed_type_variable_varience_dic, snomed_type_varience_variable_dic
+
+    @staticmethod
+    def get_type_variable_varience():
+        snomed = os.path.join(Util.data_dir, "SNOMNED_DIC.csv")
+        snomed_dic = open(snomed, "r+")
+        snomed_type_variable_varience_dic = dict()
+        snomed_type_varience_variable_dic = dict()
+
+        for f in snomed_dic:
+            file_code = f.strip().split("|")
+            file_code[1] = file_code[1].split("_SUG_")[-1]
+            file_code[2] = unidecode(file_code[2]).lower()
+            file_code[3] = unidecode(file_code[3]).lower()
+
+            variance = Util.extend_varience(file_code[3])
+            for var in variance:
+                file_code[3] = var
+                if file_code[1]not in snomed_type_variable_varience_dic.keys():
+                    snomed_type_variable_varience_dic[file_code[1]] = {file_code[2]: [file_code[3]]}
+                    snomed_type_varience_variable_dic[file_code[1]] = {file_code[3]: file_code[2]}
+                else:
+                    type_variance = snomed_type_varience_variable_dic[file_code[1]]
+                    type_variance[file_code[3]] = file_code[2]
+                    snomed_type_varience_variable_dic.update({file_code[1]: type_variance})
+
+                    type_variable = snomed_type_variable_varience_dic[file_code[1]]
+                    if file_code[2] not in type_variable.keys():
+                        type_variable[file_code[2]] = [file_code[3]]
+                    else:
+                        variance = type_variable[file_code[2]]
+                        variance.append(file_code[3])
+                        type_variable.update({file_code[2]: variance})
+                    snomed_type_variable_varience_dic.update({file_code[1]:type_variable})
+
+
+            #
+            #
+            # snomed_type_variable_varience_dic[file_code[1].split("_SUG_")[-1] + "#" + file_code[2]] = file_code[3]
+            # if file_code[3] not in snomed_type_varience_variable_dic.keys():
+            #     snomed_type_varience_variable_dic[file_code[3]] = [file_code[1].split("_SUG_")[-1] + "#" + file_code[2]]
+            # else:
+            #     temp = snomed_type_varience_variable_dic[file_code[3]]
+            #     temp.append(file_code[1].split("_SUG_")[-1] + "#" + file_code[2])
+            #     snomed_type_varience_variable_dic.update({file_code[3]:temp})
+        return snomed_type_variable_varience_dic, snomed_type_varience_variable_dic
+
+    @staticmethod
+    def get_hospital_file(all_files):
+        hospital_dic = {}
+        relacio_codis_dic = Util.get_marata_hospitals()
+        for file in all_files:
+            hospital_dic = Util.update_dic(hospital_dic, file, "all")
+            if file.startswith("sonespases_"):
+                hospital_dic = Util.update_dic(hospital_dic, file, "sonespases")
+            else:
+                hospital_dic = Util.update_dic(hospital_dic, file, "aquas")
+                file_name = file.split(".")[0]
+                if file_name in relacio_codis_dic.keys():
+                    hospital_dic = Util.update_dic(hospital_dic, file, relacio_codis_dic[file_name])
+
+        return hospital_dic
+
+    @staticmethod
+    def update_dic(hospital_dic, file, hospital):
+        if hospital not in hospital_dic.keys():
+            hospital_dic[hospital] = [file]
+        else:
+            temp = hospital_dic[hospital]
+            temp.append(file)
+            hospital_dic.update({hospital:temp})
+        return hospital_dic
 
     @staticmethod
     def get_statistical_dir(bunch):
@@ -193,7 +470,7 @@ class Util:
             unaccented_char_before = unidecode(char_before)
             unaccented_char_after = unidecode(char_after)
 
-            if unaccented_char_before is "." or unaccented_char_after is ".":
+            if unaccented_char_before == "." or unaccented_char_after == ".":
                 return False
             else:
                 return True
@@ -300,6 +577,23 @@ class Util:
                 not_direct_cat.update({word: temp})
 
         return direct_cat, not_direct_cat
+
+
+    @staticmethod
+    def find_type_variable_label(snomed_type_varience_variable_dic, cleaned_label, text):
+        if text == "carotídeo":
+            check = 0
+        if cleaned_label in const.SUB_TYPES:
+            snomed_varience_dic = snomed_type_varience_variable_dic[cleaned_label]
+            correct_name, result = Util.similarity_words(snomed_varience_dic.keys(), unidecode(text).lower())
+            if result and correct_name in snomed_varience_dic.keys():
+                candidate_label = snomed_varience_dic[correct_name]
+                return cleaned_label + "#" + candidate_label
+                # for label in candidate_label:
+                #     if cleaned_label == label.split("#")[0]:
+                #         return label
+            # return "UNKNOW"
+        return cleaned_label
 
 
     @staticmethod

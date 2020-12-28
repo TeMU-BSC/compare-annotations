@@ -45,11 +45,50 @@ def Eugenia_fecha_label(file, records, section, last_section, changed_varibales,
     return records, hora_alta_section, fecha_alta_section
 
 
+def Diagnosticos(section, related_lines, current_section_start_span, records):
+    line_iterator = iter(related_lines.split('\n'))
+    next_line = next(line_iterator)
+    start = 0
+    diagnos_enable = False
+    diagnos_span = 0
+
+    copy_records = records.copy()
+    for j, record in enumerate(copy_records):
+
+        if record['label'].split("_SUG_")[-1] in const.REQUIRED_MAIN_VARIABLES:
+            diagnos_enable = True
+            diagnos_span = record['start']
+        elif record['T'] == "Details":
+            continue
+        elif not diagnos_enable:
+            if record['label'].split("_SUG_")[-1] in const.REQUIRED_SECOND_VARIABLES:
+                records.remove(record)
+            continue
+
+        if record['label'].split("_SUG_")[-1] in const.REQUIRED_MAIN_VARIABLES:
+
+            length = len(next_line)
+            while next_line is not None and record['end'] > start + current_section_start_span + len(next_line):
+                start += len(next_line) + 1
+                next_line = next(line_iterator)
+
+        if not diagnos_enable and record['label'].split("_SUG_")[-1] in const.REQUIRED_SECOND_VARIABLES:
+            records.remove(record)
+            continue
+        elif not (record['start'] >= diagnos_span  and
+                                      record['end'] <= start + current_section_start_span + len(next_line)):
+            if record['label'].split("_SUG_")[-1] in const.REQUIRED_SECOND_VARIABLES:
+                records.remove(record)
+
+    return records
+
 def TAC(section, related_lines, current_section_start_span, records):
     line_iterator = iter(related_lines.split('\n'))
     tac_enable = False
     next_line = next(line_iterator)
     start = 0
+    Fecha_enable = False
+    Hora_enable = False
     for j, record in enumerate(records):
 
         if record['label'] == "_SUG_TAC_craneal":

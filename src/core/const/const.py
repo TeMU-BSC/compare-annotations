@@ -19,9 +19,12 @@ VICTORIA = ["Tratamiento_anticoagulante", "Tratamiento_antiagregante",
             "NIHSS", "NIHSS_previa", "NIHSS_alta", "ASPECTS",
             "Tratamiento_anticoagulante_alta", "Tratamiento_antiagregante_alta"]
 
+ALL_TYPES = ["DIAGNOSTICOS_MAIN_VARIABLES", "DIAGNOSTICOS_ATTRIBUTES", "DIAGNOSTICOS", "PROCEDIMIENTOS", "TRATAMIENTOS", "ESCALAS"]
+SUB_TYPES = ["Arteria_afectada", "Etiologia", "Lateralizacion", "Localizacion", "TAC_craneal"]
 # --------------------EUGENIA----------------------
 
 # Eugenia Diagsnotic
+
 DIAGNOSTICOS = [
     'Ictus_isquemico',
     'Ataque_isquemico_transitorio',
@@ -130,16 +133,19 @@ REQUIRED_SECOND_VARIABLES_FIRST = ["Lateralizacion", "Etiologia"]
 
 REQUIRED_SECOND_VARIABLES = ["Arteria_afectada", "Localizacion", "Lateralizacion", "Etiologia"]
 
-
-
 FECHA_HORA_TIEMO = ["HORA", "FECHA", "TIEMPO"]
 
+HOSPITAL_NAME= ["sonespases", "aquas", "sant_pau", "matua", "mar"]
 
 def get_const(variable_type):
 
 
     if variable_type == 'DIAGNOSTICOS':
         return DIAGNOSTICOS
+    elif variable_type == 'DIAGNOSTICOS_MAIN_VARIABLES':
+        return REQUIRED_MAIN_VARIABLES
+    elif variable_type == 'DIAGNOSTICOS_ATTRIBUTES':
+        return REQUIRED_SECOND_VARIABLES
     elif variable_type == 'PROCEDIMIENTOS':
         return PROCEDIMIENTOS
     elif variable_type == 'TRATAMIENTOS':
@@ -152,6 +158,7 @@ def get_const(variable_type):
         return TAC
     elif variable_type == 'VICTORIA':
         return VICTORIA
+
 
 def remove_suffix_prefix(label):
     for suffix in SUFFIX:
